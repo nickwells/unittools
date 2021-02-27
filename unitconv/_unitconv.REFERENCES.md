@@ -10,4 +10,4 @@ also give full details of a particular unit
 
 To get this program:
 
-go get \-u github\.com/nickwells/unittools/unitlist
+go install github\.com/nickwells/unittools/unitlist@latest

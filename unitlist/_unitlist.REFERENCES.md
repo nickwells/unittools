@@ -9,4 +9,4 @@ This program can be used to convert between units\.
 
 To get this program:
 
-go get \-u github\.com/nickwells/unittools/unitconv
+go install github\.com/nickwells/unittools/unitconv@latest
