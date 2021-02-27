@@ -156,7 +156,7 @@ func addReferences(ps *param.PSet) error {
 			"\n\n"+
 			"To get this program:"+
 			"\n\n"+
-			"go get -u github.com/nickwells/unittools/unitlist")
+			"go install github.com/nickwells/unittools/unitlist@latest")
 
 	return nil
 }
