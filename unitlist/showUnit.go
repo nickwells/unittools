@@ -13,6 +13,7 @@ type prefixedVal struct {
 	pfx string
 	val string
 }
+
 type unitVal struct {
 	labels []string
 	values []prefixedVal
@@ -94,7 +95,7 @@ func showUnit(fName, uName string) {
 	showUnitHeader(fName, uName)
 	unitName := getUnitName(fName, uName)
 
-	var uvList = []unitVal{
+	uvList := []unitVal{
 		{
 			labels: []string{"Abbreviation"},
 			values: []prefixedVal{{val: u.Abbrev}},

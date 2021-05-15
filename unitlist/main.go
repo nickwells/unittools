@@ -18,9 +18,12 @@ import (
 
 // Created: Fri Dec 25 18:42:35 2020
 
-var fName string
-var uName string
-var orderBySize bool
+var (
+	fName string
+	uName string
+
+	orderBySize bool
+)
 
 func main() {
 	ps := paramset.NewOrDie(addParams,
