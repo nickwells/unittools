@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/nickwells/mathutil.mod/mathutil"
 	"github.com/nickwells/param.mod/v5/param"
 	"github.com/nickwells/param.mod/v5/param/paramset"
 	"github.com/nickwells/param.mod/v5/param/psetter"
@@ -22,6 +23,7 @@ type conv struct {
 	val float64
 
 	justVal bool
+	roughly bool
 }
 
 func main() {
@@ -42,6 +44,11 @@ func main() {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+
+	if convVals.roughly {
+		converted.Val = mathutil.Roughly(converted.Val, 1.0)
+	}
+
 	if convVals.justVal {
 		fmt.Println(converted.Val)
 	} else {
@@ -83,7 +90,7 @@ func addParams(convVals *conv) func(ps *param.PSet) error {
 
 		ps.Add("val", psetter.Float64{Value: &convVals.val},
 			"the value to be converted.",
-			param.AltName("v"),
+			param.AltNames("v"),
 		)
 
 		ps.Add("just-val", psetter.Bool{Value: &convVals.justVal},
@@ -91,8 +98,12 @@ func addParams(convVals *conv) func(ps *param.PSet) error {
 				" the from and to units as well."+
 				" This flag will make the result easier to use in"+
 				" scripts as only the result is shown.",
-			param.AltName("short"),
-			param.AltName("s"),
+			param.AltNames("short", "s"),
+		)
+
+		ps.Add("roughly", psetter.Bool{Value: &convVals.roughly},
+			"just show the result rounded to the nearest"+
+				" multiple of 10 or 5 within 1% of the original value.",
 		)
 
 		ps.AddFinalCheck(func() error {
@@ -114,17 +125,22 @@ func addParams(convVals *conv) func(ps *param.PSet) error {
 				return nil
 			}
 
+			familiesHavingFromUnit := 0
 			for _, family := range validFamilies {
 				convVals.unitFrom, err = units.GetUnit(family, unitFromName)
 				if err == nil {
+					familiesHavingFromUnit++
 					convVals.unitTo, err = units.GetUnit(family, unitToName)
 					if err == nil {
 						return nil
 					}
 				}
 			}
-			return fmt.Errorf(
-				"There is no family of units having both %q and %q",
+			if familiesHavingFromUnit == 0 {
+				return fmt.Errorf("%q is not a valid unit in any unit-family",
+					unitFromName)
+			}
+			return fmt.Errorf("There is no unit-family having both %q and %q",
 				unitFromName, unitToName)
 		})
 
