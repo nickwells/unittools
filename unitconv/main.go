@@ -10,7 +10,8 @@ import (
 	"github.com/nickwells/param.mod/v5/param"
 	"github.com/nickwells/param.mod/v5/param/paramset"
 	"github.com/nickwells/param.mod/v5/param/psetter"
-	"github.com/nickwells/units.mod/units"
+	"github.com/nickwells/units.mod/v2/units"
+	"github.com/nickwells/unitsetter.mod/v4/unitsetter"
 )
 
 // Created: Sat Aug 29 16:52:07 2020
@@ -38,7 +39,7 @@ func main() {
 
 	ps.Parse()
 
-	v := units.ValWithUnit{Val: convVals.val, U: convVals.unitFrom}
+	v := units.ValUnit{V: convVals.val, U: convVals.unitFrom}
 	converted, err := v.Convert(convVals.unitTo)
 	if err != nil {
 		fmt.Println(err)
@@ -46,11 +47,11 @@ func main() {
 	}
 
 	if convVals.roughly {
-		converted.Val = mathutil.Roughly(converted.Val, 1.0)
+		converted.V = mathutil.Roughly(converted.V, 1.0)
 	}
 
 	if convVals.justVal {
-		fmt.Println(converted.Val)
+		fmt.Println(converted.V)
 	} else {
 		fmt.Println(v, "=", converted)
 	}
@@ -62,13 +63,7 @@ func addParams(convVals *conv) func(ps *param.PSet) error {
 		var unitFromName string
 		var unitToName string
 
-		var unitFamily string = "-"
-		validFamilies := units.GetFamilyNames()
-		avals := make(map[string]string)
-		for _, f := range validFamilies {
-			avals[f] = units.GetUnitDetailsOrPanic(f).Fam.Description
-		}
-		avals["-"] = "find the unit family from the unit names"
+		var unitFamily *units.Family
 
 		ps.Add("from", psetter.String{Value: &unitFromName},
 			"The units the value is in."+
@@ -81,9 +76,8 @@ func addParams(convVals *conv) func(ps *param.PSet) error {
 			param.Attrs(param.MustBeSet),
 		)
 		ps.Add("family",
-			psetter.Enum{
-				Value:       &unitFamily,
-				AllowedVals: psetter.AllowedVals(avals),
+			unitsetter.FamilySetter{
+				Value: &unitFamily,
 			},
 			"the family of units to use",
 		)
@@ -109,15 +103,13 @@ func addParams(convVals *conv) func(ps *param.PSet) error {
 		ps.AddFinalCheck(func() error {
 			var err error
 
-			if unitFamily != "-" {
-				convVals.unitFrom, err = units.GetUnit(
-					unitFamily, unitFromName)
+			if unitFamily != nil {
+				convVals.unitFrom, err = unitFamily.GetUnit(unitFromName)
 				if err != nil {
 					return err
 				}
 
-				convVals.unitTo, err = units.GetUnit(
-					unitFamily, unitToName)
+				convVals.unitTo, err = unitFamily.GetUnit(unitToName)
 				if err != nil {
 					return err
 				}
@@ -126,11 +118,12 @@ func addParams(convVals *conv) func(ps *param.PSet) error {
 			}
 
 			familiesHavingFromUnit := 0
-			for _, family := range validFamilies {
-				convVals.unitFrom, err = units.GetUnit(family, unitFromName)
+			for _, fName := range units.GetFamilyNames() {
+				f := units.GetFamilyOrPanic(fName)
+				convVals.unitFrom, err = f.GetUnit(unitFromName)
 				if err == nil {
 					familiesHavingFromUnit++
-					convVals.unitTo, err = units.GetUnit(family, unitToName)
+					convVals.unitTo, err = f.GetUnit(unitToName)
 					if err == nil {
 						return nil
 					}

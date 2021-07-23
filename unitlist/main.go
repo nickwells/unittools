@@ -7,20 +7,22 @@ import (
 	"fmt"
 	"os"
 	"sort"
+	"strings"
 
-	"github.com/nickwells/col.mod/v2/col"
-	"github.com/nickwells/col.mod/v2/col/colfmt"
+	"github.com/nickwells/col.mod/v3/col"
+	"github.com/nickwells/col.mod/v3/col/colfmt"
 	"github.com/nickwells/param.mod/v5/param"
 	"github.com/nickwells/param.mod/v5/param/paramset"
 	"github.com/nickwells/param.mod/v5/param/psetter"
-	"github.com/nickwells/units.mod/units"
+	"github.com/nickwells/units.mod/v2/units"
+	"github.com/nickwells/unitsetter.mod/v4/unitsetter"
 )
 
 // Created: Fri Dec 25 18:42:35 2020
 
 var (
-	fName string
-	uName string
+	family *units.Family
+	uName  string
 
 	orderBySize bool
 )
@@ -35,49 +37,41 @@ func main() {
 
 	ps.Parse()
 
-	if fName == "" {
+	if family == nil {
 		listFamilies()
 		return
 	}
 	if uName == "" {
-		listUnits(fName)
+		listUnits(family)
 		return
 	}
-	showUnit(fName, uName)
+	showUnit(family, uName)
 }
 
 // listUnits reports on the available units in the given family
-func listUnits(fName string) {
-	ud := units.GetUnitDetailsOrPanic(fName)
-	names := make([]string, 0, len(ud.AltU))
-	maxNameLen := 0
-	for name := range ud.AltU {
-		names = append(names, name)
-		if len(name) > maxNameLen {
-			maxNameLen = len(name)
-		}
-	}
+func listUnits(f *units.Family) {
+	unitIDs := f.GetUnitNames()
+
 	if orderBySize {
-		sort.Slice(names, func(i, j int) bool {
-			iu, err := units.GetUnit(fName, names[i])
+		sort.Slice(unitIDs, func(i, j int) bool {
+			iu, err := f.GetUnit(unitIDs[i])
 			if err != nil {
-				fmt.Fprintf(os.Stderr,
-					"%q is not a unit of %s", uName, fName)
-				os.Exit(1)
+				return false
 			}
-			ju, err := units.GetUnit(fName, names[j])
+			ju, err := f.GetUnit(unitIDs[j])
 			if err != nil {
-				fmt.Fprintf(os.Stderr,
-					"%q is not a unit of %s", uName, fName)
-				os.Exit(1)
+				return false
 			}
-			return iu.ConvFactor < ju.ConvFactor
+			if iu.ConvFactor() == ju.ConvFactor() {
+				return iu.Name() < ju.Name()
+			}
+			return iu.ConvFactor() < ju.ConvFactor()
 		})
 	} else {
-		sort.Strings(names)
+		sort.Strings(unitIDs)
 	}
-	h := col.NewHeaderOrPanic()
-	rpt := col.NewReportOrPanic(h, os.Stdout,
+
+	rpt := col.StdRpt(
 		col.New(&colfmt.String{}, "Base", "Unit"),
 		col.New(&colfmt.WrappedString{W: 20}, "Unit Name"),
 		col.New(&colfmt.Float{
@@ -88,20 +82,49 @@ func listUnits(fName string) {
 		}, "Conversion", "Factor"),
 		col.New(&colfmt.WrappedString{W: 40}, "Notes"),
 	)
-	for _, name := range names {
+
+	badUnits := []string{}
+	for _, name := range unitIDs {
 		intro := ""
-		if name == ud.Fam.BaseUnitName {
+		if name == f.BaseUnitName() {
 			intro = ">>>"
 		}
-		err := rpt.PrintRow(intro,
-			name,
-			ud.AltU[name].ConvFactor,
-			ud.AltU[name].Notes)
+		u, err := f.GetUnit(name)
 		if err != nil {
-			fmt.Fprintln(os.Stderr,
-				"Error found while printing the report:", err)
+			badUnits = append(badUnits, name)
+			continue
+		}
+		notes := u.Notes()
+		aliases := u.Aliases()
+		if len(aliases) > 0 {
+			aliasNames := []string{}
+			for k := range aliases {
+				aliasNames = append(aliasNames, k)
+			}
+			sort.Strings(aliasNames)
+			notes += "\n\nAliases:\n"
+			sep := ""
+			for _, aName := range aliasNames {
+				notes += sep + "    " + aName
+				sep = "\n"
+			}
+		}
+		if u.ConvPreAdd() != 0 || u.ConvPostAdd() != 0 {
+			notes += "\n\n" +
+				"The conversion is not a simple multiplication," +
+				" show the full unit details for a full explanation."
+		}
+		err = rpt.PrintRow(intro, name, u.ConvFactor(), notes)
+		if err != nil {
+			fmt.Fprintf(os.Stderr,
+				"Error found while printing the %q units: %v\n",
+				f.Name(), err)
 			os.Exit(1)
 		}
+	}
+	if len(badUnits) != 0 {
+		fmt.Println("These units could not be found in the unit family:")
+		fmt.Println(strings.Join(badUnits, "\n"))
 	}
 }
 
@@ -114,16 +137,28 @@ func listFamilies() {
 			maxW = len(f)
 		}
 	}
-	h := col.NewHeaderOrPanic()
-	rpt := col.NewReportOrPanic(h, os.Stdout,
+
+	maxAliasW := 0
+	aliases := units.GetFamilyAliases()
+	for _, a := range aliases {
+		if len(a) > maxAliasW {
+			maxAliasW = len(a)
+		}
+	}
+	rpt := col.StdRpt(
 		col.New(&colfmt.String{W: maxW}, "Unit", "Family"),
+		col.New(&colfmt.WrappedString{W: maxAliasW}, "Aliases"),
 		col.New(&colfmt.String{}, "Description"),
 	)
-	for _, f := range validFamilies {
-		err := rpt.PrintRow(f, units.GetUnitDetailsOrPanic(f).Fam.Description)
+	for _, fName := range validFamilies {
+		f := units.GetFamilyOrPanic(fName)
+		err := rpt.PrintRow(
+			fName,
+			strings.Join(f.FamilyAliases(), "\n"),
+			f.Description())
 		if err != nil {
 			fmt.Fprintln(os.Stderr,
-				"Error found while printing the report:", err)
+				"Error found while printing the list of unit families:", err)
 			os.Exit(1)
 		}
 	}
@@ -131,18 +166,8 @@ func listFamilies() {
 
 // addParams will add parameters to the passed ParamSet
 func addParams(ps *param.PSet) error {
-	validFamilies := units.GetFamilyNames()
-	avals := make(map[string]string)
-	for _, f := range validFamilies {
-		avals[f] = units.GetUnitDetailsOrPanic(f).Fam.Description
-	}
-
 	familyParam := ps.Add("family",
-		psetter.Enum{
-			Value:                    &fName,
-			AllowedVals:              psetter.AllowedVals(avals),
-			AllowInvalidInitialValue: true,
-		},
+		unitsetter.FamilySetter{Value: &family},
 		"the family of units to use."+
 			" If this is given without a unit then all the units for"+
 			" the family will be listed."+
