@@ -37,6 +37,29 @@ func aliasList(aliases map[string]string) []prefixedVal {
 	return rval
 }
 
+// maxLabelLen calculates the length of the longest label
+func maxLabelLen(uvList []unitVal) int {
+	max := 0
+	for _, uv := range uvList {
+		for _, l := range uv.labels {
+			if len(l) > max {
+				max = len(l)
+			}
+		}
+	}
+	return max
+}
+
+func unitTags(u units.Unit) string {
+	tags := ""
+	sep := ""
+	for _, t := range u.Tags() {
+		tags += sep + string(t)
+		sep = ", "
+	}
+	return tags
+}
+
 // showUnit displays full details of the named Unit
 func showUnit(f *units.Family, uName string) {
 	u, err := f.GetUnit(uName)
@@ -81,19 +104,15 @@ func showUnit(f *units.Family, uName string) {
 			labels: []string{"To convert", "to base units"},
 			values: []prefixedVal{{val: u.ConversionFormula()}},
 		},
+		{
+			labels: []string{"Unit tags"},
+			values: []prefixedVal{{val: unitTags(u)}},
+		},
 	}
-	maxLabelLen := 0
-	for _, uv := range uvList {
-		for _, l := range uv.labels {
-			if len(l) > maxLabelLen {
-				maxLabelLen = len(l)
-			}
-		}
-	}
+	maxLabelLen := maxLabelLen(uvList)
 
 	twc := twrap.NewTWConfOrPanic()
 	for _, uv := range uvList {
-
 		if len(uv.labels) > 1 {
 			for _, l := range uv.labels[:len(uv.labels)-1] {
 				fmt.Printf("%*s\n", maxLabelLen, l)

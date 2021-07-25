@@ -48,8 +48,8 @@ func main() {
 	showUnit(family, uName)
 }
 
-// listUnits reports on the available units in the given family
-func listUnits(f *units.Family) {
+// getUnitIDs gets a sorted list of unit getUnitIDs
+func getUnitIDs(f *units.Family) []string {
 	unitIDs := f.GetUnitNames()
 
 	if orderBySize {
@@ -70,6 +70,40 @@ func listUnits(f *units.Family) {
 	} else {
 		sort.Strings(unitIDs)
 	}
+	return unitIDs
+}
+
+// getUnitNotes builds the notes column value for the given unit
+func getUnitNotes(u units.Unit) string {
+	notes := u.Notes()
+
+	aliases := u.Aliases()
+	if len(aliases) > 0 {
+		aliasNames := []string{}
+		for k := range aliases {
+			aliasNames = append(aliasNames, k)
+		}
+		sort.Strings(aliasNames)
+		notes += "\n\nAliases:\n"
+		sep := ""
+		for _, aName := range aliasNames {
+			notes += sep + "    " + aName
+			sep = "\n"
+		}
+	}
+
+	if u.ConvPreAdd() != 0 || u.ConvPostAdd() != 0 {
+		notes += "\n\n" +
+			"The conversion is not a simple multiplication," +
+			" show the full unit details for a full explanation."
+	}
+
+	return notes
+}
+
+// listUnits reports on the available units in the given family
+func listUnits(f *units.Family) {
+	unitIDs := getUnitIDs(f)
 
 	rpt := col.StdRpt(
 		col.New(&colfmt.String{}, "Base", "Unit"),
@@ -94,26 +128,7 @@ func listUnits(f *units.Family) {
 			badUnits = append(badUnits, name)
 			continue
 		}
-		notes := u.Notes()
-		aliases := u.Aliases()
-		if len(aliases) > 0 {
-			aliasNames := []string{}
-			for k := range aliases {
-				aliasNames = append(aliasNames, k)
-			}
-			sort.Strings(aliasNames)
-			notes += "\n\nAliases:\n"
-			sep := ""
-			for _, aName := range aliasNames {
-				notes += sep + "    " + aName
-				sep = "\n"
-			}
-		}
-		if u.ConvPreAdd() != 0 || u.ConvPostAdd() != 0 {
-			notes += "\n\n" +
-				"The conversion is not a simple multiplication," +
-				" show the full unit details for a full explanation."
-		}
+		notes := getUnitNotes(u)
 		err = rpt.PrintRow(intro, name, u.ConvFactor(), notes)
 		if err != nil {
 			fmt.Fprintf(os.Stderr,
