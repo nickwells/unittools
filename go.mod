@@ -7,6 +7,6 @@ require (
 	github.com/nickwells/mathutil.mod v1.1.0
 	github.com/nickwells/param.mod/v5 v5.13.1
 	github.com/nickwells/twrap.mod v1.4.15
-	github.com/nickwells/units.mod/v2 v2.0.0
-	github.com/nickwells/unitsetter.mod/v4 v4.0.1
+	github.com/nickwells/units.mod/v2 v2.1.0
+	github.com/nickwells/unitsetter.mod/v4 v4.1.0
 )
