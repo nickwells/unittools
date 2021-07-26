@@ -2,7 +2,7 @@
 
 # unitconv
 
-This will convert a value between units of the same family
+This will convert a value between units of the same family\.
 
 
 

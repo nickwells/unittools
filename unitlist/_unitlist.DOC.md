@@ -2,7 +2,8 @@
 
 # unitlist
 
-This describes available units and families of units\.
+This can be used to list the available families of units and the units in those
+families\. It can also give full details of a particular unit
 
 
 
