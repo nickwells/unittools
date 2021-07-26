@@ -13,3 +13,7 @@ various commands wrapping the units package
 ## unitlist
 
 [See here](unitlist/_unitlist.DOC.md)
+
+## unittags
+
+[See here](unittags/_unittags.DOC.md)
