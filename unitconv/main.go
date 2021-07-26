@@ -12,6 +12,7 @@ import (
 	"github.com/nickwells/param.mod/v5/param/psetter"
 	"github.com/nickwells/units.mod/v2/units"
 	"github.com/nickwells/unitsetter.mod/v4/unitsetter"
+	"github.com/nickwells/unittools/internal/utparams"
 )
 
 // Created: Sat Aug 29 16:52:07 2020
@@ -32,9 +33,9 @@ func main() {
 	ps := paramset.NewOrDie(
 		addParams(&convVals),
 		addExamples,
-		addReferences,
-		param.SetProgramDescription(
-			"This will convert a value between units of the same family"),
+		utparams.AddRefUnitlist,
+		utparams.AddRefUnittags,
+		param.SetProgramDescription(utparams.ProgDescUnitconv),
 	)
 
 	ps.Parse()
@@ -154,18 +155,5 @@ func addExamples(ps *param.PSet) error {
 	ps.AddExample("unitconv -from chain -to m -val 80 -just-val",
 		"This will show 80 chains in metres. Only the value is "+
 			"shown and no surrounding explanatory text")
-	return nil
-}
-
-func addReferences(ps *param.PSet) error {
-	ps.AddReference("unitlist",
-		"This program can be used to list available units and"+
-			" families of units. It can also give full details of"+
-			" a particular unit"+
-			"\n\n"+
-			"To get this program:"+
-			"\n\n"+
-			"go install github.com/nickwells/unittools/unitlist@latest")
-
 	return nil
 }
