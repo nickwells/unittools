@@ -61,16 +61,17 @@ func unitTags(u units.Unit) string {
 }
 
 // showUnit displays full details of the named Unit
-func showUnit(f *units.Family, uName string) {
-	u, err := f.GetUnit(uName)
+func showUnit(ul unitlist) {
+	u, err := ul.family.GetUnit(ul.uName)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "%q is not a %s\n", uName, f.Description())
+		fmt.Fprintf(os.Stderr, "%q is not a %s\n",
+			ul.uName, ul.family.Description())
 		os.Exit(1)
 	}
 
-	fmt.Printf("%s/%s", family.Name(), uName)
+	fmt.Printf("%s/%s", ul.family.Name(), ul.uName)
 	unitName := u.ID()
-	if uName != unitName {
+	if ul.uName != unitName {
 		fmt.Printf(" (= %s)", unitName)
 	}
 	fmt.Println()
@@ -98,10 +99,10 @@ func showUnit(f *units.Family, uName string) {
 		},
 		{
 			labels: []string{"Base Unit"},
-			values: []prefixedVal{{val: f.BaseUnitName()}},
+			values: []prefixedVal{{val: ul.family.BaseUnitName()}},
 		},
 		{
-			labels: []string{"To convert", "to base units"},
+			labels: []string{"To convert", "from base units"},
 			values: []prefixedVal{{val: u.ConversionFormula()}},
 		},
 		{
