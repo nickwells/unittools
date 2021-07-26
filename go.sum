@@ -24,10 +24,10 @@ github.com/nickwells/testhelper.mod v1.15.1 h1:CHOqnYXRXkIUDAv0fubNx220MyKAiFMNm
 github.com/nickwells/testhelper.mod v1.15.1/go.mod h1:Ct/U2PjL0n9hGc+US6uR/s4NxSRI33NM+0ZkrDkG0XI=
 github.com/nickwells/twrap.mod v1.4.15 h1:uY5TgaDrUxhUV1SVn09i45W1V3XS9YC8In1aJlOsmNM=
 github.com/nickwells/twrap.mod v1.4.15/go.mod h1:U/WQ+bTHs0BsLWHnrmHTwfJaZHnV3QIrq31VKjTgXPo=
-github.com/nickwells/units.mod/v2 v2.1.0 h1:QOaSoI9XSBFVEVB5EUwzc6XgCjbQkjV54B3VadhYVO0=
-github.com/nickwells/units.mod/v2 v2.1.0/go.mod h1:CA/ON313z8EKs8WWzn025Q6GAUPqdfKsB7IheUEAMV4=
-github.com/nickwells/unitsetter.mod/v4 v4.1.0 h1:ZclnSgnJLR66B2uFpO2guw2qKxVQbrKnUAbjKNn78lA=
-github.com/nickwells/unitsetter.mod/v4 v4.1.0/go.mod h1:teSyseJATKHvfaot50vTJI3Rp2x3G8+K+j8XgNGrz9I=
+github.com/nickwells/units.mod/v2 v2.1.1 h1:Fa5tugVCETBBpnJP70YDHDRilPKQPNbW65DVpuHWehY=
+github.com/nickwells/units.mod/v2 v2.1.1/go.mod h1:CA/ON313z8EKs8WWzn025Q6GAUPqdfKsB7IheUEAMV4=
+github.com/nickwells/unitsetter.mod/v4 v4.2.0 h1:Z6BtCNcNbnOnVbKuois1+qE7Mj2ELleHoFKSpiAuhbs=
+github.com/nickwells/unitsetter.mod/v4 v4.2.0/go.mod h1:48xfBTJgM0bD2KtJIuSQDnGA3JoFCCmjdM5pUCi8tNI=
 github.com/nickwells/xdg.mod v1.0.5 h1:BkCim2ft//W1dlmh96z39YpIL4dJE7UQ1dDcMHtnfdU=
 github.com/nickwells/xdg.mod v1.0.5/go.mod h1:h8lRJMpY6oXdD6E3jJuolpO9QJE5FcTvUe8eyRzgyQo=
 golang.org/x/sys v0.0.0-20210615035016-665e8c7367d1/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
