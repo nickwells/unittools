@@ -283,14 +283,14 @@ func addParams(ul *unitlist) func(ps *param.PSet) error {
 				"\n\n"+
 				"If this is not given then a list of available families"+
 				" will be shown.",
-			param.AltName("f"),
+			param.AltNames("f"),
 		)
 
 		unitParam := ps.Add("unit", psetter.String{Value: &ul.uName},
 			"the name of the unit to show. If this is given then"+
 				" a family name must also be given."+
 				" Full details of the unit will be displayed.",
-			param.AltName("u"),
+			param.AltNames("u"),
 		)
 
 		orderParam := ps.Add("by-name", psetter.Bool{Value: &ul.orderByName},
@@ -336,7 +336,7 @@ func addParams(ul *unitlist) func(ps *param.PSet) error {
 				"\n\n"+
 				"This should not be given when"+
 				" showing details for a single unit.",
-			param.AltName("no-hdr"),
+			param.AltNames("no-hdr"),
 		)
 
 		ps.AddFinalCheck(func() error {
