@@ -13,6 +13,7 @@ import (
 	"github.com/nickwells/units.mod/v2/units"
 	"github.com/nickwells/unitsetter.mod/v4/unitsetter"
 	"github.com/nickwells/unittools/internal/utparams"
+	"github.com/nickwells/versionparams.mod/versionparams"
 )
 
 // Created: Sat Aug 29 16:52:07 2020
@@ -32,6 +33,7 @@ func main() {
 	convVals := conv{val: 1.0}
 	ps := paramset.NewOrDie(
 		addParams(&convVals),
+		versionparams.AddParams,
 		addExamples,
 		utparams.AddRefUnitlist,
 		utparams.AddRefUnittags,

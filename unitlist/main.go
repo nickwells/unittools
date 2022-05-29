@@ -17,6 +17,7 @@ import (
 	"github.com/nickwells/units.mod/v2/units"
 	"github.com/nickwells/unitsetter.mod/v4/unitsetter"
 	"github.com/nickwells/unittools/internal/utparams"
+	"github.com/nickwells/versionparams.mod/versionparams"
 )
 
 // Created: Fri Dec 25 18:42:35 2020
@@ -39,6 +40,7 @@ func main() {
 		addExamples,
 		utparams.AddRefUnitconv,
 		utparams.AddRefUnittags,
+		versionparams.AddParams,
 		param.SetProgramDescription(utparams.ProgDescUnitlist),
 	)
 

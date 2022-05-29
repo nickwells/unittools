@@ -1,6 +1,6 @@
 module github.com/nickwells/unittools
 
-go 1.15
+go 1.18
 
 require (
 	github.com/nickwells/col.mod/v3 v3.0.3
@@ -11,4 +11,5 @@ require (
 	github.com/nickwells/twrap.mod v1.4.16
 	github.com/nickwells/units.mod/v2 v2.1.2
 	github.com/nickwells/unitsetter.mod/v4 v4.2.1
+	github.com/nickwells/versionparams.mod v1.0.28
 )

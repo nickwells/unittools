@@ -16,6 +16,7 @@ import (
 	"github.com/nickwells/units.mod/v2/units"
 	"github.com/nickwells/unitsetter.mod/v4/unitsetter"
 	"github.com/nickwells/unittools/internal/utparams"
+	"github.com/nickwells/versionparams.mod/versionparams"
 )
 
 // Created: Sat Jul 24 12:59:55 2021
@@ -31,6 +32,7 @@ func main() {
 	ps := paramset.NewOrDie(addParams(&ut),
 		utparams.AddRefUnitlist,
 		utparams.AddRefUnitconv,
+		versionparams.AddParams,
 		param.SetProgramDescription(utparams.ProgDescUnittags),
 	)
 
@@ -71,7 +73,7 @@ func listTagNames(ut unittags) {
 
 	var err error
 	for _, name := range tags {
-		vals := []interface{}{name}
+		vals := []any{name}
 		if ut.showDetails {
 			vals = append(vals, units.Tag(name).Notes())
 		}
