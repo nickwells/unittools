@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/nickwells/mathutil.mod/mathutil"
+	"github.com/nickwells/mathutil.mod/v2/mathutil"
 	"github.com/nickwells/param.mod/v5/param"
 	"github.com/nickwells/param.mod/v5/param/paramset"
 	"github.com/nickwells/param.mod/v5/param/psetter"

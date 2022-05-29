@@ -8,12 +8,12 @@ import (
 	"github.com/nickwells/errutil.mod/errutil"
 	"github.com/nickwells/param.mod/v5/param/paramset"
 	"github.com/nickwells/param.mod/v5/paramtest"
-	"github.com/nickwells/testhelper.mod/testhelper"
+	"github.com/nickwells/testhelper.mod/v2/testhelper"
 )
 
 // cmpUnitTagsStruct compares the value with the expected value and returns
 // an error if they differ
-func cmpUnitTagsStruct(iVal, iExpVal interface{}) error {
+func cmpUnitTagsStruct(iVal, iExpVal any) error {
 	val, ok := iVal.(*unittags)
 	if !ok {
 		return errors.New("Bad value: not a pointer to unittags")
@@ -69,8 +69,8 @@ func TestAddParams(t *testing.T) {
 			Args:      []string{"-tag", "hystoric"},
 			ExpParseErrors: errutil.ErrMap{
 				"tag": []error{
-					errors.New("There is no unit tag called \"hystoric\"." +
-						" Did you mean: historic?" +
+					errors.New(`There is no unit tag called "hystoric".` +
+						` Did you mean: "historic"?` +
 						"\n" +
 						"At: [command line]:" +
 						" Supplied Parameter:2: -tag hystoric"),
