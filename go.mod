@@ -11,7 +11,7 @@ require (
 	github.com/nickwells/twrap.mod v1.4.19
 	github.com/nickwells/units.mod/v2 v2.1.5
 	github.com/nickwells/unitsetter.mod/v4 v4.2.6
-	github.com/nickwells/versionparams.mod v1.1.3
+	github.com/nickwells/versionparams.mod v1.1.4
 )
 
 require github.com/nickwells/tempus.mod v1.0.1 // indirect
