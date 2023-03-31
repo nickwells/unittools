@@ -3,15 +3,15 @@ module github.com/nickwells/unittools
 go 1.18
 
 require (
-	github.com/nickwells/col.mod/v3 v3.0.12
-	github.com/nickwells/errutil.mod v1.2.9
+	github.com/nickwells/col.mod/v3 v3.0.13
+	github.com/nickwells/errutil.mod v1.2.10
 	github.com/nickwells/mathutil.mod/v2 v2.0.5
-	github.com/nickwells/param.mod/v5 v5.15.8
+	github.com/nickwells/param.mod/v5 v5.15.9
 	github.com/nickwells/testhelper.mod/v2 v2.1.2
-	github.com/nickwells/twrap.mod v1.4.22
+	github.com/nickwells/twrap.mod v1.5.0
 	github.com/nickwells/units.mod/v2 v2.1.8
-	github.com/nickwells/unitsetter.mod/v4 v4.2.12
-	github.com/nickwells/versionparams.mod v1.1.9
+	github.com/nickwells/unitsetter.mod/v4 v4.2.13
+	github.com/nickwells/versionparams.mod v1.1.11
 )
 
 require github.com/nickwells/tempus.mod v1.0.2 // indirect
