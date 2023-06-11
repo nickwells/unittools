@@ -73,7 +73,7 @@ func TestAddParams(t *testing.T) {
 						` Did you mean: "historic"?` +
 						"\n" +
 						"At: [command line]:" +
-						" Supplied Parameter:2: -tag hystoric"),
+						` Supplied Parameter:2: "-tag" "hystoric"`),
 				},
 			},
 		},
