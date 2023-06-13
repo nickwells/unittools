@@ -14,11 +14,11 @@ import (
 // cmpUnitTagsStruct compares the value with the expected value and returns
 // an error if they differ
 func cmpUnitTagsStruct(iVal, iExpVal any) error {
-	val, ok := iVal.(*unittags)
+	val, ok := iVal.(*Prog)
 	if !ok {
 		return errors.New("Bad value: not a pointer to unittags")
 	}
-	expVal, ok := iExpVal.(*unittags)
+	expVal, ok := iExpVal.(*Prog)
 	if !ok {
 		return errors.New("Bad expected value: not a pointer to unittags")
 	}
@@ -39,16 +39,16 @@ func cmpUnitTagsStruct(iVal, iExpVal any) error {
 // TestAddParams will use the paramtest.Parser to make sure that the
 // behaviour of the parameter setting is as expected.
 func TestAddParams(t *testing.T) {
-	var ut1 unittags
-	var ut2 unittags
-	var ut3 unittags
+	var ut1 Prog
+	var ut2 Prog
+	var ut3 Prog
 
 	testCases := []paramtest.Parser{
 		{
 			ID:        testhelper.MkID("set long option"),
 			Ps:        paramset.NewNoHelpNoExitNoErrRptOrPanic(addParams(&ut1)),
 			Val:       &ut1,
-			ExpVal:    &unittags{tag: "", showDetails: true},
+			ExpVal:    &Prog{tag: "", showDetails: true},
 			CheckFunc: cmpUnitTagsStruct,
 			Args:      []string{"-long"},
 		},
@@ -56,7 +56,7 @@ func TestAddParams(t *testing.T) {
 			ID:        testhelper.MkID("set tag"),
 			Ps:        paramset.NewNoHelpNoExitNoErrRptOrPanic(addParams(&ut2)),
 			Val:       &ut2,
-			ExpVal:    &unittags{tag: "historic", showDetails: false},
+			ExpVal:    &Prog{tag: "historic", showDetails: false},
 			CheckFunc: cmpUnitTagsStruct,
 			Args:      []string{"-tag", "historic"},
 		},
@@ -64,7 +64,7 @@ func TestAddParams(t *testing.T) {
 			ID:        testhelper.MkID("tag setting error"),
 			Ps:        paramset.NewNoHelpNoExitNoErrRptOrPanic(addParams(&ut3)),
 			Val:       &ut3,
-			ExpVal:    &unittags{tag: "", showDetails: false},
+			ExpVal:    &Prog{tag: "", showDetails: false},
 			CheckFunc: cmpUnitTagsStruct,
 			Args:      []string{"-tag", "hystoric"},
 			ExpParseErrors: errutil.ErrMap{

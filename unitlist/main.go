@@ -3,7 +3,6 @@ package main
 // unitlist
 
 import (
-	"errors"
 	"fmt"
 	"os"
 	"sort"
@@ -11,18 +10,12 @@ import (
 
 	"github.com/nickwells/col.mod/v3/col"
 	"github.com/nickwells/col.mod/v3/col/colfmt"
-	"github.com/nickwells/param.mod/v5/param"
-	"github.com/nickwells/param.mod/v5/param/paramset"
-	"github.com/nickwells/param.mod/v5/param/psetter"
 	"github.com/nickwells/units.mod/v2/units"
-	"github.com/nickwells/unitsetter.mod/v4/unitsetter"
-	"github.com/nickwells/unittools/internal/utparams"
-	"github.com/nickwells/versionparams.mod/versionparams"
 )
 
 // Created: Fri Dec 25 18:42:35 2020
 
-type unitlist struct {
+type Prog struct {
 	family *units.Family
 	uName  string
 
@@ -34,42 +27,41 @@ type unitlist struct {
 	noHeader    bool
 }
 
+// NewProg returns a new Prog instance with the default values set
+func NewProg() *Prog {
+	return &Prog{}
+}
+
 func main() {
-	ul := unitlist{}
-	ps := paramset.NewOrDie(addParams(&ul),
-		addExamples,
-		utparams.AddRefUnitconv,
-		utparams.AddRefUnittags,
-		versionparams.AddParams,
-		param.SetProgramDescription(utparams.ProgDescUnitlist),
-	)
+	prog := NewProg()
+	ps := makeParamSet(prog)
 
 	ps.Parse()
 
-	if ul.family == nil {
-		listFamilies(ul)
+	if prog.family == nil {
+		prog.listFamilies()
 		return
 	}
-	if ul.uName == "" {
-		listUnits(ul)
+	if prog.uName == "" {
+		prog.listUnits()
 		return
 	}
-	showUnit(ul)
+	prog.showUnit()
 }
 
 // getUnitIDs gets a sorted list of unit getUnitIDs
-func getUnitIDs(ul unitlist) []string {
-	unitIDs := ul.family.GetUnitNames()
+func (prog Prog) getUnitIDs() []string {
+	unitIDs := prog.family.GetUnitNames()
 
-	if ul.orderByName {
+	if prog.orderByName {
 		sort.Strings(unitIDs)
 	} else {
 		sort.Slice(unitIDs, func(i, j int) bool {
-			iu, err := ul.family.GetUnit(unitIDs[i])
+			iu, err := prog.family.GetUnit(unitIDs[i])
 			if err != nil {
 				return false
 			}
-			ju, err := ul.family.GetUnit(unitIDs[j])
+			ju, err := prog.family.GetUnit(unitIDs[j])
 			if err != nil {
 				return false
 			}
@@ -124,13 +116,13 @@ func getUnitNotes(u units.Unit) string {
 
 // makeUnitListRpt generates the appropriate report taking into account the
 // noHeader and showDetail flags
-func makeUnitListRpt(ul unitlist) *col.Report {
+func (prog Prog) makeUnitListRpt() *col.Report {
 	hdr := col.NewHeaderOrPanic()
-	if ul.noHeader {
+	if prog.noHeader {
 		hdr = col.NewHeaderOrPanic(col.HdrOptDontPrint)
 	}
 
-	if ul.showDetail {
+	if prog.showDetail {
 		return col.NewReport(hdr, os.Stdout,
 			col.New(&colfmt.String{}, "Base", "Unit"),
 			col.New(&colfmt.WrappedString{W: 20}, "Unit Name"),
@@ -150,28 +142,28 @@ func makeUnitListRpt(ul unitlist) *col.Report {
 
 // printUnitRow prints the row in the unit list report. It returns false if
 // the unit cannot be found, true otherwise.
-func printUnitRow(ul unitlist, rpt *col.Report, uName string) bool {
-	u, err := ul.family.GetUnit(uName)
+func (prog Prog) printUnitRow(rpt *col.Report, uName string) bool {
+	u, err := prog.family.GetUnit(uName)
 	if err != nil {
 		return false
 	}
 
-	for _, tag := range ul.mustHaveTags {
+	for _, tag := range prog.mustHaveTags {
 		if !u.HasTag(tag) {
 			return true
 		}
 	}
-	for _, tag := range ul.mustNotHaveTags {
+	for _, tag := range prog.mustNotHaveTags {
 		if u.HasTag(tag) {
 			return true
 		}
 	}
 
-	if !ul.showDetail {
+	if !prog.showDetail {
 		err = rpt.PrintRow(uName)
 	} else {
 		intro := ""
-		if uName == ul.family.BaseUnitName() {
+		if uName == prog.family.BaseUnitName() {
 			intro = ">>>"
 		}
 
@@ -181,7 +173,7 @@ func printUnitRow(ul unitlist, rpt *col.Report, uName string) bool {
 
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error found while printing the %q units: %v\n",
-			ul.family.Name(), err)
+			prog.family.Name(), err)
 		os.Exit(1)
 	}
 
@@ -189,14 +181,14 @@ func printUnitRow(ul unitlist, rpt *col.Report, uName string) bool {
 }
 
 // listUnits reports on the available units in the given family
-func listUnits(ul unitlist) {
-	unitIDs := getUnitIDs(ul)
+func (prog *Prog) listUnits() {
+	unitIDs := prog.getUnitIDs()
 
-	rpt := makeUnitListRpt(ul)
+	rpt := prog.makeUnitListRpt()
 
 	badUnits := []string{}
 	for _, uName := range unitIDs {
-		if !printUnitRow(ul, rpt, uName) {
+		if !prog.printUnitRow(rpt, uName) {
 			badUnits = append(badUnits, uName)
 		}
 	}
@@ -208,13 +200,13 @@ func listUnits(ul unitlist) {
 
 // makeFamilyListRpt generates the appropriate report taking into account the
 // noHeader and showDetail flags
-func makeFamilyListRpt(ul unitlist) *col.Report {
+func (prog Prog) makeFamilyListRpt() *col.Report {
 	hdr := col.NewHeaderOrPanic()
-	if ul.noHeader {
+	if prog.noHeader {
 		hdr = col.NewHeaderOrPanic(col.HdrOptDontPrint)
 	}
 
-	if ul.showDetail {
+	if prog.showDetail {
 		maxW := 0
 		validFamilies := units.GetFamilyNames()
 		for _, f := range validFamilies {
@@ -242,10 +234,10 @@ func makeFamilyListRpt(ul unitlist) *col.Report {
 }
 
 // printFamilyRow prints the row in the family list report.
-func printFamilyRow(ul unitlist, rpt *col.Report, fName string) {
+func (prog *Prog) printFamilyRow(rpt *col.Report, fName string) {
 	var err error
 
-	if ul.showDetail {
+	if prog.showDetail {
 		f := units.GetFamilyOrPanic(fName)
 		err = rpt.PrintRow(
 			fName,
@@ -263,144 +255,28 @@ func printFamilyRow(ul unitlist, rpt *col.Report, fName string) {
 }
 
 // listFamilies reports on the available families of units
-func listFamilies(ul unitlist) {
+func (prog *Prog) listFamilies() {
 	validFamilies := units.GetFamilyNames()
 	sort.Strings(validFamilies)
 
-	rpt := makeFamilyListRpt(ul)
+	rpt := prog.makeFamilyListRpt()
 
 	for _, fName := range validFamilies {
-		printFamilyRow(ul, rpt, fName)
-	}
-}
-
-// addParams will add parameters to the passed ParamSet
-func addParams(ul *unitlist) func(ps *param.PSet) error {
-	return func(ps *param.PSet) error {
-		familyParam := ps.Add("family",
-			unitsetter.FamilySetter{Value: &ul.family},
-			"the family of units to use."+
-				" If this is given without a unit then all the units for"+
-				" the family will be listed."+
-				"\n\n"+
-				"If this is not given then a list of available families"+
-				" will be shown.",
-			param.AltNames("f"),
-		)
-
-		unitParam := ps.Add("unit", psetter.String{Value: &ul.uName},
-			"the name of the unit to show. If this is given then"+
-				" a family name must also be given."+
-				" Full details of the unit will be displayed.",
-			param.AltNames("u"),
-		)
-
-		orderParam := ps.Add("by-name", psetter.Bool{Value: &ul.orderByName},
-			"sort the units in alpabetical order not in size order."+
-				"\n\n"+
-				"This should only be given when listing all the units"+
-				" for a single family.",
-		)
-
-		ps.Add("tagged",
-			unitsetter.TagListAppender{Value: &ul.mustHaveTags},
-			"only show units which have the given tag."+
-				" This should only be given when listing all the units"+
-				" Repetitions of this parameter"+
-				" will add to the list of tags that must be present."+
-				"\n\n"+
-				"This should only be given when listing all the units"+
-				" for a single family.",
-		)
-
-		ps.Add("not-tagged",
-			unitsetter.TagListAppender{Value: &ul.mustNotHaveTags},
-			"only show units which do not have the given tag."+
-				" for a single family. Repetitions of this parameter"+
-				" will add to the list of tags that must be missing."+
-				"\n\n"+
-				"This should only be given when listing all the units"+
-				" for a single family.",
-		)
-
-		detailsParam := ps.Add("show-details",
-			psetter.Bool{Value: &ul.showDetail},
-			"show details when listing."+
-				"\n\n"+
-				"This should not be given when"+
-				" showing details for a single unit.",
-			param.AltNames("show-detail", "l"),
-		)
-
-		noHdrParam := ps.Add("no-header",
-			psetter.Bool{Value: &ul.noHeader},
-			"don't show the column headings when listing."+
-				"\n\n"+
-				"This should not be given when"+
-				" showing details for a single unit.",
-			param.AltNames("no-hdr"),
-		)
-
-		ps.AddFinalCheck(func() error {
-			if unitParam.HasBeenSet() {
-				if !familyParam.HasBeenSet() {
-					return errors.New("if a unit name is given" +
-						" a family name must also be given")
-				}
-
-				if orderParam.HasBeenSet() {
-					return errors.New("specifying the order of units" +
-						" has no effect when showing a single unit")
-				}
-
-				if ul.hasTagConstraints() {
-					return errors.New(
-						"constraining the units to list by tag name" +
-							" has no effect when showing a single unit")
-				}
-
-				if detailsParam.HasBeenSet() {
-					return errors.New("asking to see more detail" +
-						" has no effect when showing a single unit")
-				}
-
-				if noHdrParam.HasBeenSet() {
-					return errors.New("asking to not show headers" +
-						" has no effect when showing a single unit")
-				}
-				return nil
-			}
-
-			if !familyParam.HasBeenSet() {
-				if orderParam.HasBeenSet() {
-					return errors.New("specifying the order of units" +
-						" only has an effect when listing units in a family")
-				}
-
-				if ul.hasTagConstraints() {
-					return errors.New("constraining the units to list" +
-						" only has an effect when listing units in a family")
-				}
-			}
-
-			return ul.checkTagLists()
-		})
-
-		return nil
+		prog.printFamilyRow(rpt, fName)
 	}
 }
 
 // hasTagConstraints returns true if there are any entries in either of the
 // lists of tags to check when constraining the units to show.
-func (ul unitlist) hasTagConstraints() bool {
-	return len(ul.mustHaveTags) > 0 || len(ul.mustNotHaveTags) > 0
+func (prog Prog) hasTagConstraints() bool {
+	return len(prog.mustHaveTags) > 0 || len(prog.mustNotHaveTags) > 0
 }
 
 // checkTagLists returns an error if the same tag appears in both the list of
 // mandatory and forbidden tags
-func (ul unitlist) checkTagLists() error {
-	for _, mht := range ul.mustHaveTags {
-		for _, mnht := range ul.mustNotHaveTags {
+func (prog Prog) checkTagLists() error {
+	for _, mht := range prog.mustHaveTags {
+		for _, mnht := range prog.mustNotHaveTags {
 			if mht == mnht {
 				return fmt.Errorf(
 					"Tag %q is in both the mandatory and forbidden tag lists",
@@ -408,16 +284,5 @@ func (ul unitlist) checkTagLists() error {
 			}
 		}
 	}
-	return nil
-}
-
-// addExamples adds some examples of how the program might be used
-func addExamples(ps *param.PSet) error {
-	ps.AddExample("unitlist",
-		"This will show the available families of units")
-	ps.AddExample("unitlist -f temperature",
-		"This will show the available units of temperature")
-	ps.AddExample("unitlist -f temperature -u K",
-		"This will show details of the 'K' unit of temperature")
 	return nil
 }
