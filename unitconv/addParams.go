@@ -58,6 +58,15 @@ func addParams(prog *Prog) func(ps *param.PSet) error {
 				" multiple of 10 or 5 within 1% of the original value.",
 			param.PostAction(paction.SetVal(&prog.roughly, true)),
 			param.PostAction(paction.SetVal(&prog.roughPrecision, 1.0)),
+			param.SeeAlso(paramNameVeryRoughly),
+		)
+
+		ps.Add(paramNameVeryRoughly, psetter.Nil{},
+			"just show the result rounded to the nearest"+
+				" multiple of 10 or 5 within 10% of the original value.",
+			param.PostAction(paction.SetVal(&prog.roughly, true)),
+			param.PostAction(paction.SetVal(&prog.roughPrecision, 10.0)),
+			param.SeeAlso(paramNameRoughly),
 		)
 
 		ps.AddFinalCheck(func() error {
