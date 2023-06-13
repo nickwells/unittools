@@ -8,8 +8,13 @@ import (
 	"github.com/nickwells/unitsetter.mod/v4/unitsetter"
 )
 
+const (
+	paramNameTagged    = "tagged"
+	paramNameNotTagged = "not-tagged"
+)
+
 // addParams will add parameters to the passed ParamSet
-func addParams(prog *Prog) func(ps *param.PSet) error {
+func addParams(prog *Prog) param.PSetOptFunc {
 	return func(ps *param.PSet) error {
 		familyParam := ps.Add("family",
 			unitsetter.FamilySetter{Value: &prog.family},
@@ -45,9 +50,11 @@ func addParams(prog *Prog) func(ps *param.PSet) error {
 				"\n\n"+
 				"This should only be given when listing all the units"+
 				" for a single family.",
+			param.AltNames("tag"),
+			param.SeeAlso(paramNameNotTagged),
 		)
 
-		ps.Add("not-tagged",
+		ps.Add(paramNameNotTagged,
 			unitsetter.TagListAppender{Value: &prog.mustNotHaveTags},
 			"only show units which do not have the given tag."+
 				" for a single family. Repetitions of this parameter"+
@@ -55,6 +62,7 @@ func addParams(prog *Prog) func(ps *param.PSet) error {
 				"\n\n"+
 				"This should only be given when listing all the units"+
 				" for a single family.",
+			param.SeeAlso(paramNameTagged),
 		)
 
 		detailsParam := ps.Add("show-details",
