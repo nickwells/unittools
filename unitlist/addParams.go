@@ -3,8 +3,8 @@ package main
 import (
 	"errors"
 
-	"github.com/nickwells/param.mod/v5/param"
-	"github.com/nickwells/param.mod/v5/param/psetter"
+	"github.com/nickwells/param.mod/v6/param"
+	"github.com/nickwells/param.mod/v6/psetter"
 	"github.com/nickwells/unitsetter.mod/v4/unitsetter"
 )
 
@@ -27,7 +27,7 @@ func addParams(prog *Prog) param.PSetOptFunc {
 			param.AltNames("f"),
 		)
 
-		unitParam := ps.Add("unit", psetter.String{Value: &prog.uName},
+		unitParam := ps.Add("unit", psetter.String[string]{Value: &prog.uName},
 			"the name of the unit to show. If this is given then"+
 				" a family name must also be given."+
 				" Full details of the unit will be displayed.",

@@ -9,8 +9,8 @@ import (
 
 	"github.com/nickwells/col.mod/v3/col"
 	"github.com/nickwells/col.mod/v3/col/colfmt"
-	"github.com/nickwells/param.mod/v5/param"
-	"github.com/nickwells/param.mod/v5/param/psetter"
+	"github.com/nickwells/param.mod/v6/param"
+	"github.com/nickwells/param.mod/v6/psetter"
 	"github.com/nickwells/twrap.mod/twrap"
 	"github.com/nickwells/units.mod/v2/units"
 	"github.com/nickwells/unitsetter.mod/v4/unitsetter"

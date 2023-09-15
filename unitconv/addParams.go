@@ -3,9 +3,9 @@ package main
 import (
 	"fmt"
 
-	"github.com/nickwells/param.mod/v5/param"
-	"github.com/nickwells/param.mod/v5/param/paction"
-	"github.com/nickwells/param.mod/v5/param/psetter"
+	"github.com/nickwells/param.mod/v6/paction"
+	"github.com/nickwells/param.mod/v6/param"
+	"github.com/nickwells/param.mod/v6/psetter"
 	"github.com/nickwells/units.mod/v2/units"
 	"github.com/nickwells/unitsetter.mod/v4/unitsetter"
 )
@@ -23,12 +23,12 @@ func addParams(prog *Prog) func(ps *param.PSet) error {
 
 		var unitFamily *units.Family
 
-		ps.Add("from", psetter.String{Value: &unitFromName},
+		ps.Add("from", psetter.String[string]{Value: &unitFromName},
 			"The units the value is in."+
 				" It must be in the same family of units as the 'to' units.",
 			param.Attrs(param.MustBeSet),
 		)
-		ps.Add("to", psetter.String{Value: &unitToName},
+		ps.Add("to", psetter.String[string]{Value: &unitToName},
 			"The units to convert the value into."+
 				" It must be in the same family of units as the 'from' units.",
 			param.Attrs(param.MustBeSet),
@@ -40,7 +40,7 @@ func addParams(prog *Prog) func(ps *param.PSet) error {
 			"the family of units to use",
 		)
 
-		ps.Add("val", psetter.Float64{Value: &prog.val},
+		ps.Add("val", psetter.Float[float64]{Value: &prog.val},
 			"the value to be converted.",
 			param.AltNames("v"),
 		)
