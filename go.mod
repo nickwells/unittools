@@ -13,7 +13,7 @@ require (
 	github.com/nickwells/twrap.mod v1.5.3
 	github.com/nickwells/units.mod/v2 v2.1.11
 	github.com/nickwells/unitsetter.mod/v4 v4.2.20
-	github.com/nickwells/versionparams.mod v1.1.18
+	github.com/nickwells/versionparams.mod v1.2.0
 )
 
 require github.com/nickwells/tempus.mod v1.0.4 // indirect
