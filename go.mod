@@ -8,12 +8,12 @@ require (
 	github.com/nickwells/col.mod/v3 v3.0.16
 	github.com/nickwells/errutil.mod v1.2.13
 	github.com/nickwells/mathutil.mod/v2 v2.2.2
-	github.com/nickwells/param.mod/v6 v6.0.0
+	github.com/nickwells/param.mod/v6 v6.0.1
 	github.com/nickwells/testhelper.mod/v2 v2.3.0
 	github.com/nickwells/twrap.mod v1.5.3
 	github.com/nickwells/units.mod/v2 v2.1.11
-	github.com/nickwells/unitsetter.mod/v4 v4.2.20
-	github.com/nickwells/versionparams.mod v1.2.0
+	github.com/nickwells/unitsetter.mod/v4 v4.2.21
+	github.com/nickwells/versionparams.mod v1.2.3
 )
 
 require github.com/nickwells/tempus.mod v1.0.4 // indirect
