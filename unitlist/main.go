@@ -8,8 +8,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/nickwells/col.mod/v3/col"
-	"github.com/nickwells/col.mod/v3/col/colfmt"
+	"github.com/nickwells/col.mod/v4/col"
+	"github.com/nickwells/col.mod/v4/colfmt"
 	"github.com/nickwells/units.mod/v2/units"
 )
 
@@ -123,7 +123,7 @@ func (prog Prog) makeUnitListRpt() *col.Report {
 	}
 
 	if prog.showDetail {
-		return col.NewReport(hdr, os.Stdout,
+		return col.NewReportOrPanic(hdr, os.Stdout,
 			col.New(&colfmt.String{}, "Base", "Unit"),
 			col.New(&colfmt.WrappedString{W: 20}, "Unit Name"),
 			col.New(&colfmt.WrappedString{W: 20}, "Tags"),
@@ -137,7 +137,8 @@ func (prog Prog) makeUnitListRpt() *col.Report {
 		)
 	}
 
-	return col.NewReport(hdr, os.Stdout, col.New(&colfmt.String{}, "Unit Name"))
+	return col.NewReportOrPanic(hdr, os.Stdout,
+		col.New(&colfmt.String{}, "Unit Name"))
 }
 
 // printUnitRow prints the row in the unit list report. It returns false if
@@ -222,14 +223,17 @@ func (prog Prog) makeFamilyListRpt() *col.Report {
 				maxAliasW = len(a)
 			}
 		}
-		return col.NewReport(hdr, os.Stdout,
-			col.New(&colfmt.String{W: maxW}, "Unit", "Family"),
-			col.New(&colfmt.WrappedString{W: maxAliasW}, "Aliases"),
+		if maxAliasW == 0 {
+			maxAliasW = 1
+		}
+		return col.NewReportOrPanic(hdr, os.Stdout,
+			col.New(&colfmt.String{W: uint(maxW)}, "Unit", "Family"),
+			col.New(&colfmt.WrappedString{W: uint(maxAliasW)}, "Aliases"),
 			col.New(&colfmt.String{}, "Description"),
 		)
 	}
 
-	return col.NewReport(hdr, os.Stdout,
+	return col.NewReportOrPanic(hdr, os.Stdout,
 		col.New(&colfmt.String{}, "Unit Family"))
 }
 

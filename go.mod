@@ -5,7 +5,6 @@ go 1.21
 toolchain go1.21.0
 
 require (
-	github.com/nickwells/col.mod/v3 v3.1.0
 	github.com/nickwells/errutil.mod v1.2.14
 	github.com/nickwells/mathutil.mod/v2 v2.3.0
 	github.com/nickwells/param.mod/v6 v6.1.6
@@ -17,7 +16,7 @@ require (
 )
 
 require (
-	github.com/nickwells/col.mod/v4 v4.0.0 // indirect
+	github.com/nickwells/col.mod/v4 v4.0.0
 	github.com/nickwells/strdist.mod/v2 v2.0.0 // indirect
 	github.com/nickwells/tempus.mod v1.2.0 // indirect
 )
