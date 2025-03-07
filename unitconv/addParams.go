@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 
+	"github.com/nickwells/check.mod/v2/check"
+	"github.com/nickwells/english.mod/english"
 	"github.com/nickwells/param.mod/v6/paction"
 	"github.com/nickwells/param.mod/v6/param"
 	"github.com/nickwells/param.mod/v6/psetter"
@@ -11,6 +13,8 @@ import (
 )
 
 const (
+	paramNameFrom        = "from"
+	paramNameTo          = "to"
 	paramNameRoughly     = "roughly"
 	paramNameVeryRoughly = "very-roughly"
 )
@@ -18,24 +22,28 @@ const (
 // addParams will add parameters to the passed ParamSet
 func addParams(prog *Prog) func(ps *param.PSet) error {
 	return func(ps *param.PSet) error {
-		var unitFromName string
-		var unitToName string
-
-		var unitFamily *units.Family
-
-		ps.Add("from", psetter.String[string]{Value: &unitFromName},
+		ps.Add(paramNameFrom, psetter.String[string]{Value: &prog.unitFromName},
 			"The units the value is in."+
-				" It must be in the same family of units as the 'to' units.",
+				" It must be in the same family of units"+
+				" as the '"+paramNameTo+"' units.",
 			param.Attrs(param.MustBeSet),
 		)
-		ps.Add("to", psetter.String[string]{Value: &unitToName},
+		ps.Add(paramNameTo, psetter.StrList[string]{
+			Value: &prog.unitToNames,
+			Checks: []check.ValCk[[]string]{
+				check.SliceLength[[]string, string](check.ValGT[int](0)),
+				check.SliceAll[[]string, string](
+					check.StringLength[string](check.ValGT[int](0))),
+			},
+		},
 			"The units to convert the value into."+
-				" It must be in the same family of units as the 'from' units.",
+				" They must all be in the same family of units as"+
+				" the '"+paramNameFrom+"' unit.",
 			param.Attrs(param.MustBeSet),
 		)
 		ps.Add("family",
 			unitsetter.FamilySetter{
-				Value: &unitFamily,
+				Value: &prog.unitFamily,
 			},
 			"the family of units to use",
 		)
@@ -70,42 +78,41 @@ func addParams(prog *Prog) func(ps *param.PSet) error {
 		)
 
 		ps.AddFinalCheck(func() error {
-			var err error
-
-			if unitFamily != nil {
-				prog.unitFrom, err = unitFamily.GetUnit(unitFromName)
-				if err != nil {
-					return err
-				}
-
-				prog.unitTo, err = unitFamily.GetUnit(unitToName)
-				if err != nil {
-					return err
-				}
-
-				return nil
+			if prog.unitFamily != nil {
+				return populateTargetUnitsFromFamily(prog)
 			}
 
-			familiesHavingFromUnit := 0
 			for _, fName := range units.GetFamilyNames() {
-				f := units.GetFamilyOrPanic(fName)
-				prog.unitFrom, err = f.GetUnit(unitFromName)
-				if err == nil {
-					familiesHavingFromUnit++
-					prog.unitTo, err = f.GetUnit(unitToName)
-					if err == nil {
-						return nil
-					}
+				prog.unitFamily = units.GetFamilyOrPanic(fName)
+				if err := populateTargetUnitsFromFamily(prog); err == nil {
+					return nil
 				}
-			}
-			if familiesHavingFromUnit == 0 {
-				return fmt.Errorf("%q is not a valid unit in any unit-family",
-					unitFromName)
 			}
 			return fmt.Errorf("There is no unit-family having both %q and %q",
-				unitFromName, unitToName)
+				prog.unitFromName,
+				english.Join(prog.unitToNames, `", "`, `" and "`))
 		})
 
 		return nil
 	}
+}
+
+// populateTargetUnitsFromFamily finds the units in the supplied family
+func populateTargetUnitsFromFamily(prog *Prog) error {
+	var err error
+	prog.unitFrom, err = prog.unitFamily.GetUnit(prog.unitFromName)
+	if err != nil {
+		return err
+	}
+
+	prog.unitTo = []units.Unit{}
+	for _, unitName := range prog.unitToNames {
+		u, err := prog.unitFamily.GetUnit(unitName)
+		if err != nil {
+			return err
+		}
+		prog.unitTo = append(prog.unitTo, u)
+	}
+
+	return nil
 }

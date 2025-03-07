@@ -4,6 +4,7 @@ package main
 
 import (
 	"fmt"
+	"math"
 	"os"
 
 	"github.com/nickwells/mathutil.mod/v2/mathutil"
@@ -14,8 +15,13 @@ import (
 
 // Prog holds the values describing the conversion to perform
 type Prog struct {
+	unitFamily *units.Family
+
+	unitFromName string
+	unitToNames  []string
+
 	unitFrom units.Unit
-	unitTo   units.Unit
+	unitTo   []units.Unit
 
 	val float64
 
@@ -38,19 +44,43 @@ func main() {
 	ps.Parse()
 
 	v := units.ValUnit{V: prog.val, U: prog.unitFrom}
-	converted, err := v.Convert(prog.unitTo)
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+
+	if !prog.justVal {
+		fmt.Print(v, "=")
 	}
 
-	if prog.roughly {
-		converted.V = mathutil.Roughly(converted.V, prog.roughPrecision)
-	}
+	sep := ""
+	for i, unitTo := range prog.unitTo {
+		converted, err := v.Convert(unitTo)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
 
-	if prog.justVal {
-		fmt.Println(converted.V)
-	} else {
-		fmt.Println(v, "=", converted)
+		if prog.roughly {
+			converted.V = mathutil.Roughly(converted.V, prog.roughPrecision)
+		}
+		if i != len(prog.unitTo)-1 {
+			intPart := math.Floor(converted.V)
+			fracPart := converted.V - intPart
+			converted.V = intPart
+			backVal := units.ValUnit{V: fracPart, U: unitTo}
+			convertedBack, err := backVal.Convert(prog.unitFrom)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+			v.V = convertedBack.V
+		}
+
+		fmt.Print(sep)
+		if prog.justVal {
+			sep = " "
+			fmt.Print(converted.V)
+		} else {
+			sep = ", "
+			fmt.Print(converted)
+		}
 	}
+	fmt.Println()
 }
