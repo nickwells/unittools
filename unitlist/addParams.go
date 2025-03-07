@@ -110,6 +110,7 @@ func addParams(prog *Prog) param.PSetOptFunc {
 					return errors.New("asking to not show headers" +
 						" has no effect when showing a single unit")
 				}
+
 				return nil
 			}
 

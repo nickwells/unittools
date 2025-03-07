@@ -10,5 +10,6 @@ func addExamples(ps *param.PSet) error {
 		"This will show the available units of temperature")
 	ps.AddExample("unitlist -f temperature -u K",
 		"This will show details of the 'K' unit of temperature")
+
 	return nil
 }

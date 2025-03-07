@@ -18,6 +18,7 @@ func cmpUnitTagsStruct(iVal, iExpVal any) error {
 	if !ok {
 		return errors.New("Bad value: not a pointer to unittags")
 	}
+
 	expVal, ok := iExpVal.(*Prog)
 	if !ok {
 		return errors.New("Bad expected value: not a pointer to unittags")
@@ -39,9 +40,7 @@ func cmpUnitTagsStruct(iVal, iExpVal any) error {
 // TestAddParams will use the paramtest.Parser to make sure that the
 // behaviour of the parameter setting is as expected.
 func TestAddParams(t *testing.T) {
-	var ut1 Prog
-	var ut2 Prog
-	var ut3 Prog
+	var ut1, ut2, ut3 Prog
 
 	testCases := []paramtest.Parser{
 		{

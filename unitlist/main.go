@@ -42,10 +42,12 @@ func main() {
 		prog.listFamilies()
 		return
 	}
+
 	if prog.uName == "" {
 		prog.listUnits()
 		return
 	}
+
 	prog.showUnit()
 }
 
@@ -61,16 +63,20 @@ func (prog Prog) getUnitIDs() []string {
 			if err != nil {
 				return false
 			}
+
 			ju, err := prog.family.GetUnit(unitIDs[j])
 			if err != nil {
 				return false
 			}
+
 			if iu.ConvFactor() == ju.ConvFactor() {
 				return iu.Name() < ju.Name()
 			}
+
 			return iu.ConvFactor() < ju.ConvFactor()
 		})
 	}
+
 	return unitIDs
 }
 
@@ -79,10 +85,12 @@ func getUnitTags(u units.Unit) string {
 	tags := u.Tags()
 	rval := ""
 	sep := ""
+
 	for _, tag := range tags {
 		rval += sep + string(tag)
 		sep = "\n"
 	}
+
 	return rval
 }
 
@@ -96,9 +104,12 @@ func getUnitNotes(u units.Unit) string {
 		for k := range aliases {
 			aliasNames = append(aliasNames, k)
 		}
+
 		sort.Strings(aliasNames)
+
 		notes += "\n\nAliases:\n"
 		sep := ""
+
 		for _, aName := range aliasNames {
 			notes += sep + "    " + aName
 			sep = "\n"
@@ -116,6 +127,8 @@ func getUnitNotes(u units.Unit) string {
 
 // makeUnitListRpt generates the appropriate report taking into account the
 // noHeader and showDetail flags
+//
+//nolint:mnd
 func (prog Prog) makeUnitListRpt() *col.Report {
 	hdr := col.NewHeaderOrPanic()
 	if prog.noHeader {
@@ -154,6 +167,7 @@ func (prog Prog) printUnitRow(rpt *col.Report, uName string) bool {
 			return true
 		}
 	}
+
 	for _, tag := range prog.mustNotHaveTags {
 		if u.HasTag(tag) {
 			return true
@@ -184,15 +198,15 @@ func (prog Prog) printUnitRow(rpt *col.Report, uName string) bool {
 // listUnits reports on the available units in the given family
 func (prog *Prog) listUnits() {
 	unitIDs := prog.getUnitIDs()
-
 	rpt := prog.makeUnitListRpt()
-
 	badUnits := []string{}
+
 	for _, uName := range unitIDs {
 		if !prog.printUnitRow(rpt, uName) {
 			badUnits = append(badUnits, uName)
 		}
 	}
+
 	if len(badUnits) != 0 {
 		fmt.Println("These units could not be found in the unit family:")
 		fmt.Println(strings.Join(badUnits, "\n"))
@@ -209,6 +223,7 @@ func (prog Prog) makeFamilyListRpt() *col.Report {
 
 	if prog.showDetail {
 		maxW := 0
+
 		validFamilies := units.GetFamilyNames()
 		for _, f := range validFamilies {
 			if len(f) > maxW {
@@ -217,18 +232,23 @@ func (prog Prog) makeFamilyListRpt() *col.Report {
 		}
 
 		maxAliasW := 0
+
 		aliases := units.GetFamilyAliases()
 		for _, a := range aliases {
 			if len(a) > maxAliasW {
 				maxAliasW = len(a)
 			}
 		}
+
 		if maxAliasW == 0 {
 			maxAliasW = 1
 		}
+
 		return col.NewReportOrPanic(hdr, os.Stdout,
-			col.New(&colfmt.String{W: uint(maxW)}, "Unit", "Family"),
-			col.New(&colfmt.WrappedString{W: uint(maxAliasW)}, "Aliases"),
+			col.New(&colfmt.String{W: uint(maxW)}, //nolint:gosec
+				"Unit", "Family"),
+			col.New(&colfmt.WrappedString{W: uint(maxAliasW)}, //nolint:gosec
+				"Aliases"),
 			col.New(&colfmt.String{}, "Description"),
 		)
 	}
@@ -288,5 +308,6 @@ func (prog Prog) checkTagLists() error {
 			}
 		}
 	}
+
 	return nil
 }

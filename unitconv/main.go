@@ -50,6 +50,7 @@ func main() {
 	}
 
 	sep := ""
+
 	for i, unitTo := range prog.unitTo {
 		converted, err := v.Convert(unitTo)
 		if err != nil {
@@ -60,27 +61,34 @@ func main() {
 		if prog.roughly {
 			converted.V = mathutil.Roughly(converted.V, prog.roughPrecision)
 		}
+
 		if i != len(prog.unitTo)-1 {
 			intPart := math.Floor(converted.V)
 			fracPart := converted.V - intPart
 			converted.V = intPart
 			backVal := units.ValUnit{V: fracPart, U: unitTo}
+
 			convertedBack, err := backVal.Convert(prog.unitFrom)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
+
 			v.V = convertedBack.V
 		}
 
 		fmt.Print(sep)
+
 		if prog.justVal {
 			sep = " "
+
 			fmt.Print(converted.V)
 		} else {
 			sep = ", "
+
 			fmt.Print(converted)
 		}
 	}
+
 	fmt.Println()
 }

@@ -43,32 +43,39 @@ func main() {
 
 // maxTagNameLen returns the maximum length of the tag names
 func maxTagNameLen(tags []string) int {
-	max := 0
+	maximum := 0
 
 	for _, tag := range tags {
-		if len(tag) > max {
-			max = len(tag)
+		if len(tag) > maximum {
+			maximum = len(tag)
 		}
 	}
-	return max
+
+	return maximum
 }
 
 // listTagNames lists the available tag listTagNames
+//
+//nolint:mnd
 func (prog Prog) listTagNames() {
 	tags := units.GetTagNames()
 
 	sort.Strings(tags)
 
-	max := maxTagNameLen(tags)
+	maximum := maxTagNameLen(tags)
 	extraCols := []*col.Col{}
+
 	if prog.showDetails {
 		extraCols = append(extraCols,
 			col.New(&colfmt.WrappedString{W: 50}, "Notes"))
 	}
-	rpt := col.StdRpt(col.New(&colfmt.String{W: uint(max)}, "Tag"),
+
+	rpt := col.StdRpt(col.New(&colfmt.String{W: uint(maximum)}, //nolint:gosec
+		"Tag"),
 		extraCols...)
 
 	var err error
+
 	for _, name := range tags {
 		vals := []any{name}
 		if prog.showDetails {

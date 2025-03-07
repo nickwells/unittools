@@ -19,6 +19,11 @@ const (
 	paramNameVeryRoughly = "very-roughly"
 )
 
+const (
+	roughPrecisionValue     = 1
+	veryRoughPrecisionValue = 10
+)
+
 // addParams will add parameters to the passed ParamSet
 func addParams(prog *Prog) func(ps *param.PSet) error {
 	return func(ps *param.PSet) error {
@@ -62,18 +67,22 @@ func addParams(prog *Prog) func(ps *param.PSet) error {
 		)
 
 		ps.Add(paramNameRoughly, psetter.Nil{},
-			"just show the result rounded to the nearest"+
-				" multiple of 10 or 5 within 1% of the original value.",
+			fmt.Sprintf("just show the result rounded to the nearest"+
+				" multiple of 10 or 5 within %d%% of the original value.",
+				roughPrecisionValue),
 			param.PostAction(paction.SetVal(&prog.roughly, true)),
-			param.PostAction(paction.SetVal(&prog.roughPrecision, 1.0)),
+			param.PostAction(paction.SetVal(&prog.roughPrecision,
+				roughPrecisionValue)),
 			param.SeeAlso(paramNameVeryRoughly),
 		)
 
 		ps.Add(paramNameVeryRoughly, psetter.Nil{},
-			"just show the result rounded to the nearest"+
-				" multiple of 10 or 5 within 10% of the original value.",
+			fmt.Sprintf("just show the result rounded to the nearest"+
+				" multiple of 10 or 5 within %d%% of the original value.",
+				veryRoughPrecisionValue),
 			param.PostAction(paction.SetVal(&prog.roughly, true)),
-			param.PostAction(paction.SetVal(&prog.roughPrecision, 10.0)),
+			param.PostAction(paction.SetVal(&prog.roughPrecision,
+				veryRoughPrecisionValue)),
 			param.SeeAlso(paramNameRoughly),
 		)
 
@@ -88,6 +97,7 @@ func addParams(prog *Prog) func(ps *param.PSet) error {
 					return nil
 				}
 			}
+
 			return fmt.Errorf("There is no unit-family having both %q and %q",
 				prog.unitFromName,
 				english.Join(prog.unitToNames, `", "`, `" and "`))
@@ -100,6 +110,7 @@ func addParams(prog *Prog) func(ps *param.PSet) error {
 // populateTargetUnitsFromFamily finds the units in the supplied family
 func populateTargetUnitsFromFamily(prog *Prog) error {
 	var err error
+
 	prog.unitFrom, err = prog.unitFamily.GetUnit(prog.unitFromName)
 	if err != nil {
 		return err
@@ -111,6 +122,7 @@ func populateTargetUnitsFromFamily(prog *Prog) error {
 		if err != nil {
 			return err
 		}
+
 		prog.unitTo = append(prog.unitTo, u)
 	}
 

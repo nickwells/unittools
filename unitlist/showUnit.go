@@ -22,11 +22,13 @@ type unitVal struct {
 func aliasList(aliases map[string]string) []prefixedVal {
 	rval := []prefixedVal{}
 	maxAliasNameLen := 0
+
 	for alias := range aliases {
 		if len(alias) > maxAliasNameLen {
 			maxAliasNameLen = len(alias)
 		}
 	}
+
 	for alias, notes := range aliases {
 		rval = append(rval,
 			prefixedVal{
@@ -34,29 +36,34 @@ func aliasList(aliases map[string]string) []prefixedVal {
 				val: notes,
 			})
 	}
+
 	return rval
 }
 
 // maxLabelLen calculates the length of the longest label
 func maxLabelLen(uvList []unitVal) int {
-	max := 0
+	maximum := 0
+
 	for _, uv := range uvList {
 		for _, l := range uv.labels {
-			if len(l) > max {
-				max = len(l)
+			if len(l) > maximum {
+				maximum = len(l)
 			}
 		}
 	}
-	return max
+
+	return maximum
 }
 
 func unitTags(u units.Unit) string {
 	tags := ""
 	sep := ""
+
 	for _, t := range u.Tags() {
 		tags += sep + string(t)
 		sep = ", "
 	}
+
 	return tags
 }
 
@@ -70,10 +77,12 @@ func (prog Prog) showUnit() {
 	}
 
 	fmt.Printf("%s/%s", prog.family.Name(), prog.uName)
+
 	unitName := u.ID()
 	if prog.uName != unitName {
 		fmt.Printf(" (= %s)", unitName)
 	}
+
 	fmt.Println()
 
 	uvList := []unitVal{
@@ -110,23 +119,31 @@ func (prog Prog) showUnit() {
 			values: []prefixedVal{{val: unitTags(u)}},
 		},
 	}
-	maxLabelLen := maxLabelLen(uvList)
 
+	maxLabelLen := maxLabelLen(uvList)
 	twc := twrap.NewTWConfOrPanic()
+
 	for _, uv := range uvList {
 		if len(uv.labels) > 1 {
 			for _, l := range uv.labels[:len(uv.labels)-1] {
 				fmt.Printf("%*s\n", maxLabelLen, l)
 			}
 		}
+
 		label := ": "
+
 		if len(uv.labels) > 0 {
 			label = uv.labels[len(uv.labels)-1] + ": "
 		}
+
 		for _, v := range uv.values {
-			twc.WrapPrefixed(fmt.Sprintf("%*s%s", maxLabelLen+2, label, v.pfx),
+			twc.WrapPrefixed(
+				fmt.Sprintf("%*s%s",
+					maxLabelLen+2, label, //nolint:mnd
+					v.pfx),
 				v.val,
 				0)
+
 			label = ""
 		}
 	}

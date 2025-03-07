@@ -41,10 +41,12 @@ func AddRefs(selfName string) param.PSetOptFunc {
 		for pName := range descriptions {
 			prognames = append(prognames, pName)
 		}
+
 		sort.Slice(prognames,
 			func(i, j int) bool { return prognames[i] < prognames[j] })
 
 		foundSelf := false
+
 		for _, pName := range prognames {
 			if pName == selfName {
 				foundSelf = true
@@ -63,6 +65,7 @@ func AddRefs(selfName string) param.PSetOptFunc {
 			return fmt.Errorf("the program name %q is not recognised",
 				selfName)
 		}
+
 		return nil
 	}
 }
