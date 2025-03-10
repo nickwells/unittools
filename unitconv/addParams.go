@@ -98,9 +98,9 @@ func addParams(prog *Prog) func(ps *param.PSet) error {
 				}
 			}
 
-			return fmt.Errorf("There is no unit-family having both %q and %q",
+			return fmt.Errorf("There is no unit-family having both %q and %s",
 				prog.unitFromName,
-				english.Join(prog.unitToNames, `", "`, `" and "`))
+				english.JoinQuoted(prog.unitToNames, ", ", " and ", `"`, `"`))
 		})
 
 		return nil
