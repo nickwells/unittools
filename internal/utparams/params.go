@@ -2,7 +2,8 @@ package utparams
 
 import (
 	"fmt"
-	"sort"
+	"maps"
+	"slices"
 
 	"github.com/nickwells/param.mod/v6/param"
 )
@@ -37,14 +38,7 @@ var descriptions = map[string]string{
 // descriptions.
 func AddRefs(selfName string) param.PSetOptFunc {
 	return func(ps *param.PSet) error {
-		prognames := make([]string, 0, len(descriptions))
-		for pName := range descriptions {
-			prognames = append(prognames, pName)
-		}
-
-		sort.Slice(prognames,
-			func(i, j int) bool { return prognames[i] < prognames[j] })
-
+		prognames := slices.Sorted(maps.Keys(descriptions))
 		foundSelf := false
 
 		for _, pName := range prognames {

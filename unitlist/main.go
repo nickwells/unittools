@@ -4,7 +4,9 @@ package main
 
 import (
 	"fmt"
+	"maps"
 	"os"
+	"slices"
 	"sort"
 	"strings"
 
@@ -100,19 +102,11 @@ func getUnitNotes(u units.Unit) string {
 
 	aliases := u.Aliases()
 	if len(aliases) > 0 {
-		aliasNames := []string{}
-		for k := range aliases {
-			aliasNames = append(aliasNames, k)
-		}
-
-		sort.Strings(aliasNames)
-
-		notes += "\n\nAliases:\n"
-		sep := ""
+		aliasNames := slices.Sorted(maps.Keys(aliases))
+		notes += "\n\nAliases:"
 
 		for _, aName := range aliasNames {
-			notes += sep + "    " + aName
-			sep = "\n"
+			notes += "\n    " + aName
 		}
 	}
 
