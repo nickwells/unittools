@@ -68,7 +68,7 @@ func TestAddParams(t *testing.T) {
 			Args:      []string{"-tag", "hystoric"},
 			ExpParseErrors: errutil.ErrMap{
 				"tag": []error{
-					errors.New(`There is no unit tag called "hystoric".` +
+					errors.New(`there is no unit tag called "hystoric".` +
 						` Did you mean: "historic"?` +
 						"\n" +
 						"At: [command line]:" +
