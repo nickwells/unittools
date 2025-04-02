@@ -68,7 +68,7 @@ func unitTags(u units.Unit) string {
 }
 
 // showUnit displays full details of the named Unit
-func (prog Prog) showUnit() {
+func (prog prog) showUnit() {
 	u, err := prog.family.GetUnit(prog.uName)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "%q is not a %s\n",

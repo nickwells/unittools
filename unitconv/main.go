@@ -13,8 +13,8 @@ import (
 
 // Created: Sat Aug 29 16:52:07 2020
 
-// Prog holds the values describing the conversion to perform
-type Prog struct {
+// prog holds the values describing the conversion to perform
+type prog struct {
 	unitFamily *units.Family
 
 	unitFromName string
@@ -30,15 +30,15 @@ type Prog struct {
 	roughPrecision float64
 }
 
-// NewProg returns a new Prog instance with the default values set
-func NewProg() *Prog {
-	return &Prog{
+// newProg returns a new Prog instance with the default values set
+func newProg() *prog {
+	return &prog{
 		val: 1,
 	}
 }
 
 func main() {
-	prog := NewProg()
+	prog := newProg()
 	ps := makeParamSet(prog)
 
 	ps.Parse()

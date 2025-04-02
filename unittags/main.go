@@ -18,19 +18,19 @@ import (
 
 // Created: Sat Jul 24 12:59:55 2021
 
-// Prog groups the parameter values for the Prog program
-type Prog struct {
+// prog groups the parameter values for the prog program
+type prog struct {
 	tag         units.Tag
 	showDetails bool
 }
 
-// NewProg returns a new Prog instance with the default values set
-func NewProg() *Prog {
-	return &Prog{}
+// newProg returns a new Prog instance with the default values set
+func newProg() *prog {
+	return &prog{}
 }
 
 func main() {
-	prog := NewProg()
+	prog := newProg()
 	ps := makeParamSet(prog)
 	ps.Parse()
 
@@ -57,7 +57,7 @@ func maxTagNameLen(tags []string) int {
 // listTagNames lists the available tag listTagNames
 //
 //nolint:mnd
-func (prog Prog) listTagNames() {
+func (prog prog) listTagNames() {
 	tags := units.GetTagNames()
 
 	sort.Strings(tags)
@@ -93,7 +93,7 @@ func (prog Prog) listTagNames() {
 }
 
 // showTagDetails displays the details for just the given showTagDetails
-func (prog Prog) showTagDetails() {
+func (prog prog) showTagDetails() {
 	twc := twrap.NewTWConfOrPanic()
 
 	twc.WrapPrefixed("  Tag: ", string(prog.tag), 0)
@@ -101,7 +101,7 @@ func (prog Prog) showTagDetails() {
 }
 
 // addParams will add parameters to the passed ParamSet
-func addParams(prog *Prog) param.PSetOptFunc {
+func addParams(prog *prog) param.PSetOptFunc {
 	return func(ps *param.PSet) error {
 		ps.Add("long", psetter.Bool{Value: &prog.showDetails},
 			"show the full details when displaying the tag",

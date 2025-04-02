@@ -8,6 +8,7 @@ import (
 	"github.com/nickwells/param.mod/v6/param"
 )
 
+// These consts record the names of the various unittools commands
 const (
 	ProgNameUnitlist = "unitlist"
 	ProgNameUnitconv = "unitconv"

@@ -17,7 +17,7 @@ import (
 
 // Created: Fri Dec 25 18:42:35 2020
 
-type Prog struct {
+type prog struct {
 	family *units.Family
 	uName  string
 
@@ -29,13 +29,13 @@ type Prog struct {
 	noHeader    bool
 }
 
-// NewProg returns a new Prog instance with the default values set
-func NewProg() *Prog {
-	return &Prog{}
+// newProg returns a new Prog instance with the default values set
+func newProg() *prog {
+	return &prog{}
 }
 
 func main() {
-	prog := NewProg()
+	prog := newProg()
 	ps := makeParamSet(prog)
 
 	ps.Parse()
@@ -54,7 +54,7 @@ func main() {
 }
 
 // getUnitIDs gets a sorted list of unit getUnitIDs
-func (prog Prog) getUnitIDs() []string {
+func (prog prog) getUnitIDs() []string {
 	unitIDs := prog.family.GetUnitNames()
 
 	if prog.orderByName {
@@ -123,7 +123,7 @@ func getUnitNotes(u units.Unit) string {
 // noHeader and showDetail flags
 //
 //nolint:mnd
-func (prog Prog) makeUnitListRpt() *col.Report {
+func (prog prog) makeUnitListRpt() *col.Report {
 	hdr := col.NewHeaderOrPanic()
 	if prog.noHeader {
 		hdr = col.NewHeaderOrPanic(col.HdrOptDontPrint)
@@ -150,7 +150,7 @@ func (prog Prog) makeUnitListRpt() *col.Report {
 
 // printUnitRow prints the row in the unit list report. It returns false if
 // the unit cannot be found, true otherwise.
-func (prog Prog) printUnitRow(rpt *col.Report, uName string) bool {
+func (prog prog) printUnitRow(rpt *col.Report, uName string) bool {
 	u, err := prog.family.GetUnit(uName)
 	if err != nil {
 		return false
@@ -190,7 +190,7 @@ func (prog Prog) printUnitRow(rpt *col.Report, uName string) bool {
 }
 
 // listUnits reports on the available units in the given family
-func (prog *Prog) listUnits() {
+func (prog *prog) listUnits() {
 	unitIDs := prog.getUnitIDs()
 	rpt := prog.makeUnitListRpt()
 	badUnits := []string{}
@@ -209,7 +209,7 @@ func (prog *Prog) listUnits() {
 
 // makeFamilyListRpt generates the appropriate report taking into account the
 // noHeader and showDetail flags
-func (prog Prog) makeFamilyListRpt() *col.Report {
+func (prog prog) makeFamilyListRpt() *col.Report {
 	hdr := col.NewHeaderOrPanic()
 	if prog.noHeader {
 		hdr = col.NewHeaderOrPanic(col.HdrOptDontPrint)
@@ -252,7 +252,7 @@ func (prog Prog) makeFamilyListRpt() *col.Report {
 }
 
 // printFamilyRow prints the row in the family list report.
-func (prog *Prog) printFamilyRow(rpt *col.Report, fName string) {
+func (prog *prog) printFamilyRow(rpt *col.Report, fName string) {
 	var err error
 
 	if prog.showDetail {
@@ -273,7 +273,7 @@ func (prog *Prog) printFamilyRow(rpt *col.Report, fName string) {
 }
 
 // listFamilies reports on the available families of units
-func (prog *Prog) listFamilies() {
+func (prog *prog) listFamilies() {
 	validFamilies := units.GetFamilyNames()
 	sort.Strings(validFamilies)
 
@@ -286,20 +286,18 @@ func (prog *Prog) listFamilies() {
 
 // hasTagConstraints returns true if there are any entries in either of the
 // lists of tags to check when constraining the units to show.
-func (prog Prog) hasTagConstraints() bool {
+func (prog prog) hasTagConstraints() bool {
 	return len(prog.mustHaveTags) > 0 || len(prog.mustNotHaveTags) > 0
 }
 
 // checkTagLists returns an error if the same tag appears in both the list of
 // mandatory and forbidden tags
-func (prog Prog) checkTagLists() error {
+func (prog prog) checkTagLists() error {
 	for _, mht := range prog.mustHaveTags {
-		for _, mnht := range prog.mustNotHaveTags {
-			if mht == mnht {
-				return fmt.Errorf(
-					"Tag %q is in both the mandatory and forbidden tag lists",
-					mht)
-			}
+		if slices.Contains(prog.mustNotHaveTags, mht) {
+			return fmt.Errorf(
+				"tag %q is in both the mandatory and forbidden tag lists",
+				mht)
 		}
 	}
 

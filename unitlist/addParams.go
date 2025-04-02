@@ -14,7 +14,7 @@ const (
 )
 
 // addParams will add parameters to the passed ParamSet
-func addParams(prog *Prog) param.PSetOptFunc {
+func addParams(prog *prog) param.PSetOptFunc {
 	return func(ps *param.PSet) error {
 		familyParam := ps.Add("family",
 			unitsetter.FamilySetter{Value: &prog.family},

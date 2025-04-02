@@ -25,7 +25,7 @@ const (
 )
 
 // addParams will add parameters to the passed ParamSet
-func addParams(prog *Prog) func(ps *param.PSet) error {
+func addParams(prog *prog) func(ps *param.PSet) error {
 	return func(ps *param.PSet) error {
 		ps.Add(paramNameFrom, psetter.String[string]{Value: &prog.unitFromName},
 			"The units the value is in."+
@@ -98,7 +98,7 @@ func addParams(prog *Prog) func(ps *param.PSet) error {
 				}
 			}
 
-			return fmt.Errorf("There is no unit-family having both %q and %s",
+			return fmt.Errorf("there is no unit-family having both %q and %s",
 				prog.unitFromName,
 				english.JoinQuoted(prog.unitToNames, ", ", " and ", `"`, `"`))
 		})
@@ -108,7 +108,7 @@ func addParams(prog *Prog) func(ps *param.PSet) error {
 }
 
 // populateTargetUnitsFromFamily finds the units in the supplied family
-func populateTargetUnitsFromFamily(prog *Prog) error {
+func populateTargetUnitsFromFamily(prog *prog) error {
 	var err error
 
 	prog.unitFrom, err = prog.unitFamily.GetUnit(prog.unitFromName)
