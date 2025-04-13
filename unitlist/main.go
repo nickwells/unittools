@@ -162,10 +162,8 @@ func (prog prog) printUnitRow(rpt *col.Report, uName string) bool {
 		}
 	}
 
-	for _, tag := range prog.mustNotHaveTags {
-		if u.HasTag(tag) {
-			return true
-		}
+	if slices.ContainsFunc(prog.mustNotHaveTags, u.HasTag) {
+		return true
 	}
 
 	if !prog.showDetail {
