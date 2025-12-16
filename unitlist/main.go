@@ -84,39 +84,45 @@ func (prog prog) getUnitIDs() []string {
 
 // getUnitTags returns the tags for this getUnitTags
 func getUnitTags(u units.Unit) string {
+	var tagStr strings.Builder
+
 	tags := u.Tags()
-	rval := ""
 	sep := ""
 
-	for _, tag := range tags {
-		rval += sep + string(tag)
+	for _, t := range tags {
+		tagStr.WriteString(sep)
+		tagStr.WriteString(string(t))
+
 		sep = "\n"
 	}
 
-	return rval
+	return tagStr.String()
 }
 
 // getUnitNotes builds the notes column value for the given unit
 func getUnitNotes(u units.Unit) string {
-	notes := u.Notes()
+	var notes strings.Builder
+	notes.WriteString(u.Notes())
 
 	aliases := u.Aliases()
 	if len(aliases) > 0 {
 		aliasNames := slices.Sorted(maps.Keys(aliases))
-		notes += "\n\nAliases:"
+
+		notes.WriteString("\n\nAliases:")
 
 		for _, aName := range aliasNames {
-			notes += "\n    " + aName
+			notes.WriteString("\n    ")
+			notes.WriteString(aName)
 		}
 	}
 
 	if u.ConvPreAdd() != 0 || u.ConvPostAdd() != 0 {
-		notes += "\n\n" +
+		notes.WriteString("\n\n" +
 			"The conversion is not a simple multiplication," +
-			" show the full unit details for a full explanation."
+			" show the unit details for a full explanation.")
 	}
 
-	return notes
+	return notes.String()
 }
 
 // makeUnitListRpt generates the appropriate report taking into account the

@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/nickwells/twrap.mod/twrap"
 	"github.com/nickwells/units.mod/v2/units"
@@ -56,15 +57,18 @@ func maxLabelLen(uvList []unitVal) int {
 }
 
 func unitTags(u units.Unit) string {
-	tags := ""
+	var tags strings.Builder
+
 	sep := ""
 
 	for _, t := range u.Tags() {
-		tags += sep + string(t)
+		tags.WriteString(sep)
+		tags.WriteString(string(t))
+
 		sep = ", "
 	}
 
-	return tags
+	return tags.String()
 }
 
 // showUnit displays full details of the named Unit
