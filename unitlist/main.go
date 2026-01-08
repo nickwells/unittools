@@ -10,8 +10,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/nickwells/col.mod/v5/col"
-	"github.com/nickwells/col.mod/v5/colfmt"
+	"github.com/nickwells/col.mod/v6/col"
+	"github.com/nickwells/col.mod/v6/colfmt"
 	"github.com/nickwells/units.mod/v2/units"
 )
 
@@ -239,10 +239,8 @@ func (prog prog) makeFamilyListRpt() *col.Report {
 		}
 
 		return col.NewReportOrPanic(hdr, os.Stdout,
-			col.New(&colfmt.String{W: uint(maxW)}, //nolint:gosec
-				"Unit", "Family"),
-			col.New(&colfmt.WrappedString{W: uint(maxAliasW)}, //nolint:gosec
-				"Aliases"),
+			col.New(&colfmt.String{W: maxW}, "Unit", "Family"),
+			col.New(&colfmt.WrappedString{W: maxAliasW}, "Aliases"),
 			col.New(&colfmt.String{}, "Description"),
 		)
 	}

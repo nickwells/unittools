@@ -7,8 +7,8 @@ import (
 	"os"
 	"sort"
 
-	"github.com/nickwells/col.mod/v5/col"
-	"github.com/nickwells/col.mod/v5/colfmt"
+	"github.com/nickwells/col.mod/v6/col"
+	"github.com/nickwells/col.mod/v6/colfmt"
 	"github.com/nickwells/param.mod/v6/param"
 	"github.com/nickwells/param.mod/v6/psetter"
 	"github.com/nickwells/twrap.mod/twrap"
@@ -68,9 +68,7 @@ func (prog prog) listTagNames() {
 			col.New(&colfmt.WrappedString{W: 50}, "Notes"))
 	}
 
-	rpt := col.StdRpt(col.New(&colfmt.String{W: uint(maximum)}, //nolint:gosec
-		"Tag"),
-		extraCols...)
+	rpt := col.StdRpt(col.New(&colfmt.String{W: maximum}, "Tag"), extraCols...)
 
 	var err error
 
