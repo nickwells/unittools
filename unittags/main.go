@@ -43,15 +43,13 @@ func main() {
 
 // maxTagNameLen returns the maximum length of the tag names
 func maxTagNameLen(tags []string) int {
-	maximum := 0
+	maxLen := 0
 
 	for _, tag := range tags {
-		if len(tag) > maximum {
-			maximum = len(tag)
-		}
+		maxLen = max(len(tag), maxLen)
 	}
 
-	return maximum
+	return maxLen
 }
 
 // listTagNames lists the available tag listTagNames

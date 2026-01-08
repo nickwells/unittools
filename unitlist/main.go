@@ -224,18 +224,14 @@ func (prog prog) makeFamilyListRpt() *col.Report {
 
 		validFamilies := units.GetFamilyNames()
 		for _, f := range validFamilies {
-			if len(f) > maxW {
-				maxW = len(f)
-			}
+			maxW = max(len(f), maxW)
 		}
 
 		maxAliasW := 0
 
 		aliases := units.GetFamilyAliases()
 		for _, a := range aliases {
-			if len(a) > maxAliasW {
-				maxAliasW = len(a)
-			}
+			maxAliasW = max(len(a), maxAliasW)
 		}
 
 		if maxAliasW == 0 {

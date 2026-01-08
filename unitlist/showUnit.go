@@ -25,9 +25,7 @@ func aliasList(aliases map[string]string) []prefixedVal {
 	maxAliasNameLen := 0
 
 	for alias := range aliases {
-		if len(alias) > maxAliasNameLen {
-			maxAliasNameLen = len(alias)
-		}
+		maxAliasNameLen = max(len(alias), maxAliasNameLen)
 	}
 
 	for alias, notes := range aliases {
@@ -43,17 +41,15 @@ func aliasList(aliases map[string]string) []prefixedVal {
 
 // maxLabelLen calculates the length of the longest label
 func maxLabelLen(uvList []unitVal) int {
-	maximum := 0
+	maxLen := 0
 
 	for _, uv := range uvList {
 		for _, l := range uv.labels {
-			if len(l) > maximum {
-				maximum = len(l)
-			}
+			maxLen = max(len(l), maxLen)
 		}
 	}
 
-	return maximum
+	return maxLen
 }
 
 func unitTags(u units.Unit) string {
