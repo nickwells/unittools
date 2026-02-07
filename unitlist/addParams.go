@@ -3,8 +3,8 @@ package main
 import (
 	"errors"
 
-	"github.com/nickwells/param.mod/v6/param"
-	"github.com/nickwells/param.mod/v6/psetter"
+	"github.com/nickwells/param.mod/v7/param"
+	"github.com/nickwells/param.mod/v7/psetter"
 	"github.com/nickwells/unitsetter.mod/v4/unitsetter"
 )
 

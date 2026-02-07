@@ -6,8 +6,8 @@ import (
 	"testing"
 
 	"github.com/nickwells/errutil.mod/errutil"
-	"github.com/nickwells/param.mod/v6/paramset"
-	"github.com/nickwells/param.mod/v6/paramtest"
+	"github.com/nickwells/param.mod/v7/paramset"
+	"github.com/nickwells/param.mod/v7/paramtest"
 	"github.com/nickwells/testhelper.mod/v2/testhelper"
 )
 
@@ -45,7 +45,7 @@ func TestAddParams(t *testing.T) {
 	testCases := []paramtest.Parser{
 		{
 			ID:        testhelper.MkID("set long option"),
-			Ps:        paramset.NewNoHelpNoExitNoErrRptOrPanic(addParams(&ut1)),
+			Ps:        paramset.NewNoHelpNoExitNoErrRpt(addParams(&ut1)),
 			Val:       &ut1,
 			ExpVal:    &prog{tag: "", showDetails: true},
 			CheckFunc: cmpUnitTagsStruct,
@@ -53,7 +53,7 @@ func TestAddParams(t *testing.T) {
 		},
 		{
 			ID:        testhelper.MkID("set tag"),
-			Ps:        paramset.NewNoHelpNoExitNoErrRptOrPanic(addParams(&ut2)),
+			Ps:        paramset.NewNoHelpNoExitNoErrRpt(addParams(&ut2)),
 			Val:       &ut2,
 			ExpVal:    &prog{tag: "historic", showDetails: false},
 			CheckFunc: cmpUnitTagsStruct,
@@ -61,7 +61,7 @@ func TestAddParams(t *testing.T) {
 		},
 		{
 			ID:        testhelper.MkID("tag setting error"),
-			Ps:        paramset.NewNoHelpNoExitNoErrRptOrPanic(addParams(&ut3)),
+			Ps:        paramset.NewNoHelpNoExitNoErrRpt(addParams(&ut3)),
 			Val:       &ut3,
 			ExpVal:    &prog{tag: "", showDetails: false},
 			CheckFunc: cmpUnitTagsStruct,
