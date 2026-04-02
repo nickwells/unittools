@@ -11,8 +11,8 @@ require (
 	github.com/nickwells/param.mod/v7 v7.1.2
 	github.com/nickwells/testhelper.mod/v2 v2.5.0
 	github.com/nickwells/twrap.mod v1.5.13
-	github.com/nickwells/units.mod/v2 v2.1.24
-	github.com/nickwells/unitsetter.mod/v4 v4.2.46
+	github.com/nickwells/units.mod/v2 v2.2.0
+	github.com/nickwells/unitsetter.mod/v4 v4.2.48
 	github.com/nickwells/versionparams.mod v1.2.23
 )
 
