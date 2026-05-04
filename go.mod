@@ -8,12 +8,12 @@ require (
 	github.com/nickwells/english.mod v1.2.10
 	github.com/nickwells/errutil.mod v1.2.24
 	github.com/nickwells/mathutil.mod/v2 v2.5.11
-	github.com/nickwells/param.mod/v7 v7.2.1
+	github.com/nickwells/param.mod/v7 v7.2.2
 	github.com/nickwells/testhelper.mod/v2 v2.6.1
 	github.com/nickwells/twrap.mod v1.5.14
-	github.com/nickwells/units.mod/v2 v2.2.1
-	github.com/nickwells/unitsetter.mod/v4 v4.2.50
-	github.com/nickwells/versionparams.mod v1.2.25
+	github.com/nickwells/units.mod/v2 v2.2.2
+	github.com/nickwells/unitsetter.mod/v4 v4.2.51
+	github.com/nickwells/versionparams.mod v1.2.26
 )
 
 require (
