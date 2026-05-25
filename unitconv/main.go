@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"math"
 	"os"
+	"strconv"
 
 	"github.com/nickwells/mathutil.mod/v2/mathutil"
 	"github.com/nickwells/units.mod/v2/units"
@@ -28,12 +29,19 @@ type prog struct {
 	justVal        bool
 	roughly        bool
 	roughPrecision float64
+
+	displayWidth int
+	displayPrec  int
 }
 
 // newProg returns a new Prog instance with the default values set
 func newProg() *prog {
+	const dfltDisplayPrec = 6
+
 	return &prog{
-		val: 1,
+		val:          1,
+		displayWidth: 0,
+		displayPrec:  dfltDisplayPrec,
 	}
 }
 
@@ -45,8 +53,13 @@ func main() {
 
 	v := units.ValUnit{V: prog.val, U: prog.unitFrom}
 
+	fmtStr := "%" +
+		strconv.Itoa(prog.displayWidth) +
+		"." +
+		strconv.Itoa(prog.displayPrec) +
+		"u"
 	if !prog.justVal {
-		fmt.Print(v, "=")
+		fmt.Printf(fmtStr+" = ", v)
 	}
 
 	sep := ""
@@ -86,7 +99,7 @@ func main() {
 		} else {
 			sep = ", "
 
-			fmt.Print(converted)
+			fmt.Printf(fmtStr, converted)
 		}
 	}
 

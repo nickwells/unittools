@@ -36,9 +36,9 @@ func addParams(prog *prog) func(ps *param.PSet) error {
 		ps.Add(paramNameTo, psetter.StrList[string]{
 			Value: &prog.unitToNames,
 			Checks: []check.ValCk[[]string]{
-				check.SliceLength[[]string, string](check.ValGT[int](0)),
-				check.SliceAll[[]string, string](
-					check.StringLength[string](check.ValGT[int](0))),
+				check.SliceLength[[]string](check.ValGT(0)),
+				check.SliceAll[[]string](
+					check.StringLength[string](check.ValGT(0))),
 			},
 		},
 			"The units to convert the value into."+
@@ -56,6 +56,18 @@ func addParams(prog *prog) func(ps *param.PSet) error {
 		ps.Add("val", psetter.Float[float64]{Value: &prog.val},
 			"the value to be converted.",
 			param.AltNames("v"),
+		)
+
+		ps.Add("width", psetter.Int[int]{Value: &prog.displayWidth},
+			"the space to allow for the display of the"+
+				" converted value (the number part).",
+		)
+
+		ps.Add("precision", psetter.Int[int]{Value: &prog.displayPrec},
+			"the number of digits of precision to allow"+
+				" when displaying the"+
+				" converted value (the number part).",
+			param.AltNames("prec"),
 		)
 
 		ps.Add("just-val", psetter.Bool{Value: &prog.justVal},
