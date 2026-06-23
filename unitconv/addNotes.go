@@ -25,6 +25,7 @@ func addNotes(_ *prog) param.PSetOptFunc {
 				" using this parameter (especially with the"+
 				" '"+paramNameRoughly+"' parameter) can help"+
 				" you identify this as two rods or half a chain.")
+
 		return nil
 	}
 }
