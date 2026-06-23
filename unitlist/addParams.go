@@ -9,6 +9,13 @@ import (
 )
 
 const (
+	paramNameFamily = "family"
+	paramNameUnit   = "unit"
+
+	paramNameByName      = "by-name"
+	paramNameShowDetails = "show-details"
+	paramNameNoHeader    = "no-header"
+
 	paramNameTagged    = "tagged"
 	paramNameNotTagged = "not-tagged"
 )
@@ -16,7 +23,7 @@ const (
 // addParams will add parameters to the passed ParamSet
 func addParams(prog *prog) param.PSetOptFunc {
 	return func(ps *param.PSet) error {
-		familyParam := ps.Add("family",
+		familyParam := ps.Add(paramNameFamily,
 			unitsetter.FamilySetter{Value: &prog.family},
 			"the family of units to use."+
 				" If this is given without a unit then all the units for"+
@@ -24,24 +31,26 @@ func addParams(prog *prog) param.PSetOptFunc {
 				"\n\n"+
 				"If this is not given then a list of available families"+
 				" will be shown.",
-			param.AltNames("f"),
+			param.AltNames("f", "fam"),
 		)
 
-		unitParam := ps.Add("unit", psetter.String[string]{Value: &prog.uName},
+		unitParam := ps.Add(paramNameUnit,
+			psetter.String[string]{Value: &prog.uName},
 			"the name of the unit to show. If this is given then"+
 				" a family name must also be given."+
 				" Full details of the unit will be displayed.",
 			param.AltNames("u"),
 		)
 
-		orderParam := ps.Add("by-name", psetter.Bool{Value: &prog.orderByName},
+		orderParam := ps.Add(paramNameByName,
+			psetter.Bool{Value: &prog.orderByName},
 			"sort the units in alpabetical order not in size order."+
 				"\n\n"+
 				"This should only be given when listing all the units"+
 				" for a single family.",
 		)
 
-		ps.Add("tagged",
+		ps.Add(paramNameTagged,
 			unitsetter.TagListAppender{Value: &prog.mustHaveTags},
 			"only show units which have the given tag."+
 				" This should only be given when listing all the units"+
@@ -65,7 +74,7 @@ func addParams(prog *prog) param.PSetOptFunc {
 			param.SeeAlso(paramNameTagged),
 		)
 
-		detailsParam := ps.Add("show-details",
+		detailsParam := ps.Add(paramNameShowDetails,
 			psetter.Bool{Value: &prog.showDetail},
 			"show details when listing."+
 				"\n\n"+
@@ -74,7 +83,7 @@ func addParams(prog *prog) param.PSetOptFunc {
 			param.AltNames("show-detail", "l"),
 		)
 
-		noHdrParam := ps.Add("no-header",
+		noHdrParam := ps.Add(paramNameNoHeader,
 			psetter.Bool{Value: &prog.noHeader},
 			"don't show the column headings when listing."+
 				"\n\n"+
