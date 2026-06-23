@@ -12,7 +12,7 @@ require (
 	github.com/nickwells/testhelper.mod/v2 v2.6.1
 	github.com/nickwells/twrap.mod v1.5.14
 	github.com/nickwells/units.mod/v2 v2.4.0
-	github.com/nickwells/unitsetter.mod/v4 v4.3.0
+	github.com/nickwells/unitsetter.mod/v4 v4.4.0
 	github.com/nickwells/verbose.mod v1.1.24
 	github.com/nickwells/versionparams.mod v1.2.28
 )
