@@ -56,6 +56,7 @@ func addParams(prog *prog) func(ps *param.PSet) error {
 				" as the '"+paramNameTo+"' units."+
 				"\n\n"+
 				familyChoice,
+			param.ValueName("unit-name"),
 			param.Attrs(param.MustBeSet),
 			param.SeeAlso(paramNameFamily, paramNameTo, paramNameNearest),
 		)
@@ -134,6 +135,7 @@ func addParams(prog *prog) func(ps *param.PSet) error {
 				" the '"+paramNameFrom+"' unit."+
 				"\n\n"+
 				familyChoice,
+			param.ValueName("unit-name,..."),
 			param.PostAction(tOBCAF),
 			param.SeeAlso(paramNameFamily, paramNameFrom, paramNameNearest),
 		)
