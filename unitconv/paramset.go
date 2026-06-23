@@ -15,6 +15,7 @@ func makeParamSet(prog *prog) *param.PSet {
 		versionparams.AddParams,
 
 		addParams(prog),
+		addNotes(prog),
 		addExamples,
 		utparams.AddRefs(pName),
 

@@ -1,5 +1,8 @@
 <!-- Created by mkdoc DO NOT EDIT. -->
 
+<!-- The contents of this file will be inserted into the generated -->
+<!-- Markdown documentation at the front by the mkdoc command. -->
+<!-- TODO: add any extra documentation -->
 # unitconv
 
 This will convert a value between units of the same family\.
@@ -34,6 +37,9 @@ provide complete documentation for the program from the command line.
 
 This offers version-querying parameters that allow the user to discover the
 program version.
+<!-- The contents of this file will be inserted into the generated -->
+<!-- Markdown documentation at the back by the mkdoc command. -->
+<!-- TODO: add any extra documentation -->
 
 
 ## Examples
@@ -42,3 +48,7 @@ For examples [see here](_unitconv.EXAMPLES.md)
 
 ## See Also
 For external references [see here](_unitconv.REFERENCES.md)
+
+
+## Notes
+For additional notes [see here](_unitconv.NOTES.md)
