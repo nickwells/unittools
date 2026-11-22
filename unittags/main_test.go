@@ -8,7 +8,7 @@ import (
 	"github.com/nickwells/errutil.mod/errutil"
 	"github.com/nickwells/param.mod/v7/paramset"
 	"github.com/nickwells/param.mod/v7/paramtest"
-	"github.com/nickwells/testhelper.mod/v2/testhelper"
+	"github.com/nickwells/testhelper.mod/v3/testhelper"
 )
 
 // cmpUnitTagsStruct compares the value with the expected value and returns

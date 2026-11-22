@@ -3,15 +3,13 @@ package main
 import (
 	"testing"
 
-	"github.com/nickwells/testhelper.mod/v2/testhelper"
+	"github.com/nickwells/testhelper.mod/v3/testhelper"
 )
 
 func TestMakeParamSet(t *testing.T) {
 	prog := newProg()
-	panicked, panicVal := testhelper.PanicSafe(func() {
+	pi := testhelper.PanicSafe(func() {
 		_ = makeParamSet(prog)
 	})
-	testhelper.PanicCheckError(t, "makeParamSet",
-		panicked, false,
-		panicVal, []string{})
+	testhelper.CheckNoPanic(t, "makeParamSet", pi)
 }
